@@ -12,29 +12,28 @@ import axios from "axios/index";
 import Gravatar from 'react-gravatar'
 
 class Header extends Component {
-
-    state = {
-        name: '',
-		avatar: '',
-		check: false
-    }
-
     constructor(props) {
         super(props);
+		
+		this.state = {
+			name: "",
+			avatar: "",
+			check: false
+		};
 
         const avatarURL = "/api/loginEmail"
 
-        axios.get(avatarURL)
-            .then(response => {
-                this.setState({avatar: response.data.yourEmail})
-            });
+        //axios.get(avatarURL)
+        //    .then(response => {
+        //        this.setState({avatar: response.data.yourEmail})
+        //   });
 
 
         const userURL = "/api/loginName"
 
         axios.get(userURL)
             .then(response => {
-                this.setState({name: response.data.yourName})
+              this.setState({name: response.data.yourName, avatar: response.data.yourEmail})
             });
     }
 
@@ -43,7 +42,7 @@ class Header extends Component {
 	render() {
 		return (
 			<header>
-                <Gravatar id={'avatar'} email={this.state.avatar} size={27} />
+				{/*<Gravatar id={'avatar'} email={this.state.avatar} size={27} />*/}
                 {/*<img  id={'avatar'} src={this.state.avatar} alt="avatar"/>*/}
 				<div id='topBar'>
                     < DropDown  />
@@ -55,7 +54,7 @@ class Header extends Component {
 
 				<div>
                     <div id="search">
-                        <input id="headerSearch" type={"text"} name={"place"} placeholder={' restaurants in Amsterdam'}  />
+                        <input id="headerSearch" type={"text"} name={"place"} placeholder={' Restaurants in Amsterdam'}  />
                         <div id="searchIcon">
                             <NavLink to="/search"><FontAwesomeIcon icon={searchIcon} /></NavLink>
                         </div>
@@ -68,8 +67,6 @@ class Header extends Component {
 		);
 	}
 }
-
-
 
 class DropDown extends Component {
 	constructor(props) {
@@ -124,7 +121,7 @@ class Menu extends Component {
         const url = "/api/loginValue"
         axios.get(url)
             .then(response => {
-                this.setState({check: response.data.value});
+               this.setState({check: response.data.value});
                 this.setState({showLogin: !response.data.value});
             });
 
@@ -135,10 +132,10 @@ class Menu extends Component {
 		return (
 			<ul id="menu">
 				<a onClick={() => this.dispatchNewRoute('/')}><li>Home</li></a>
-				<a onClick={() => this.dispatchNewRoute('/profile')}><li>Profile</li></a>
-				<a onClick={() => this.dispatchNewRoute('/addEvent')}><li>Add Event</li></a>
-                <a  style={{display: this.state.showLogin ? 'block' : 'none' }}onClick={() => this.dispatchNewRoute('/login')}><li>Login</li></a>
-				<a  style={{display: this.state.check ? 'block' : 'none' }} onClick={() => this.dispatchNewRoute('/logout')}><li>logout</li></a>
+				<a style={{display: this.state.check ? 'block': 'none' }} onClick={() => this.dispatchNewRoute('/profile')}><li>Profile</li></a>
+				<a style={{display: this.state.check ? 'block': 'none' }} onClick={() => this.dispatchNewRoute('/addEvent')}><li>Add Event</li></a>
+                <a style={{display: this.state.showLogin ? 'block' : 'none' }} onClick={() => this.dispatchNewRoute('/login')}><li>Login</li></a>
+				<a style={{display: this.state.check ? 'block' : 'none' }} onClick={() => this.dispatchNewRoute('/logout')}><li>Logout</li></a>
 				{/*<li><NavLink to="/">Home</NavLink></li>
 				<li><NavLink to="/login">Login</NavLink></li>
 				<li><NavLink to="/profile">Profile</NavLink></li>

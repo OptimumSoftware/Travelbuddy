@@ -21,7 +21,7 @@
     "react-slick": "^0.23.1",
     "react-slide-toggle": "^0.1.12",
     "react-toggle-display": "^2.2.0",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
     "url-parse": "^1.4.1"
   },
   "scripts": {
