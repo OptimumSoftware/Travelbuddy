@@ -55,34 +55,34 @@ class App extends Component {
 }
 
 class Home extends Component {
-    state = {
-        region_name: ' ',
-        counter: 0,
-        zoom: 1,
-        text: ' ',
-        city: '',
-        continent_name: ' ',
-        latitude: ' ',
-        longitude: ' ',
-        wikitext: ' ',
-        calling_code: ' ',
-        gpsCity: '',
-        country_name: ' ',
-        lat: null,
-        lon: null,
-        name: ' ',
-        categories: [],
-        id: "hier moet unieke waarde komen",
-        show: false,
-        photos: [logo1,logo2,logo3,logo4],
-        query: "",
-        range: "5000",
-		userId: "",
-		loggedIn: false
-    };
+	constructor(props) {
+		super(props);
 
-
-    componentDidMount(){
+		this.state = {
+			region_name: ' ',
+			counter: 0,
+			zoom: 1,
+			text: ' ',
+			city: '',
+			continent_name: ' ',
+			latitude: ' ',
+			longitude: ' ',
+			wikitext: ' ',
+			calling_code: ' ',
+			gpsCity: '',
+			country_name: ' ',
+			lat: null,
+			lon: null,
+			name: ' ',
+			categories: [],
+			id: "hier moet unieke waarde komen",
+			show: false,
+			photos: [logo1,logo2,logo3,logo4],
+			query: "",
+			range: "5000",
+			userId: "",
+			loggedIn: false
+		};
 
 		const url = "/api/loginCheck";
 		axios.get(url)
@@ -113,7 +113,7 @@ class Home extends Component {
 				}
 				else {
 					this.setState({
-						categories: ['real_estate_agency', 'restaurant']
+						categories: ['restaurant', 'bar', 'car_dealer', 'hotel']
 					});
 				}
 			})		
@@ -186,6 +186,12 @@ class Home extends Component {
 
 
             });
+	}
+
+
+    componentDidMount(){
+
+
     }
 	
 	

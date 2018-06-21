@@ -266,8 +266,8 @@ class Search extends Component {
             <div className={"data"}>
                 <div className={"searchHeader"}>
                     <div className={"col-12 search"}>
-                        <h3>Zoek door TravelBuddy</h3>
-                        <select onChange={this.setSearch}>
+                        <h3>Search TravelBuddy</h3>
+                        <select onChange={this.setSearch} className='search-select'>
                             <option value="city" >City search</option>
                             <option value="keyword" >Keyword search</option>
                         </select>
