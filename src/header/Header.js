@@ -42,7 +42,7 @@ class Header extends Component {
 	render() {
 		return (
 			<header>
-				{/*<Gravatar id={'avatar'} email={this.state.avatar} size={27} />*/}
+				<Gravatar id={'avatar'} email={this.state.avatar} size={27} />
                 {/*<img  id={'avatar'} src={this.state.avatar} alt="avatar"/>*/}
 				<div id='topBar'>
                     < DropDown  />
