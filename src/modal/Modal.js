@@ -87,7 +87,7 @@ class Modal extends Component {
 						this.setState({
 							voteCount: response.data['likes']
 						})
-						document.getElementById("voteIcon").style.color = "white";
+						document.getElementById("voteIcon").style.color = "#000";
 					}		
 				});  
 			} 
@@ -115,7 +115,7 @@ class Modal extends Component {
 			if(this.state.favoriteCheck) {
 				const url = "/api/user/favorite" + "?username=" + this.state.userId + "&id=" + this.props.id;
 				axios.delete(url)
-				document.getElementById("heartIcon").style.color = "#fff";
+				document.getElementById("heartIcon").style.color = "#000";
 				this.setState({
 					favoriteText: "Add favorite"
 				})
@@ -138,7 +138,7 @@ class Modal extends Component {
 		if(this.state.loggedIn) {
 			axios.get("/api/user/checkFavorite" + "?username=" + this.state.userId + "&id=" + this.props.id)
 				.then(response => {
-					document.getElementById("heartIcon").style.color = "#fff";
+					document.getElementById("heartIcon").style.color = "#000";
 					console.log("Not liked yet")
 					this.setState({
 						favoriteText: "Add favorite"

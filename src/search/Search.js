@@ -29,7 +29,8 @@ class Search extends Component {
             middlePage: "",
             firstPage: false,
             savedQuery: "",
-            checkPage: 0
+            checkPage: 0,
+			loadGoogleLib: false
         };
 
         this.getCategories()
@@ -46,6 +47,13 @@ class Search extends Component {
                 currentLng: position.coords.longitude
             })
         })
+		
+		require.ensure(["scriptjs"], () => {
+			const scriptjs = require("scriptjs");
+			scriptjs("https://maps.googleapis.com/maps/api/js?key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E&libraries=places&language=en", () => {
+				this.setState({loadGoogleLib: true})
+			})
+		})
     }
 
 
@@ -271,7 +279,7 @@ class Search extends Component {
                             <option value="city" >City search</option>
                             <option value="keyword" >Keyword search</option>
                         </select>
-                        <input type={"text"} name={"place"} onChange={this.handleChange} />
+						<input type={"text"} name={"place"} onChange={this.handleChange} />
                         <button type={"submit"} name={"submit"} onClick={this.checkSearch}>Zoek</button>
                     </div>
                 </div>
