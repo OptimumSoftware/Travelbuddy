@@ -104,7 +104,7 @@ class RegisterForm extends Component {
 		return (
 			<div id="registerForm" >
 						<h3>Register</h3>
-						<form onSubmit={this.handleSubmit} action='/login' method='POST'>
+						<form onSubmit={this.handleSubmit} action='/register' method='POST'>
 
                             <label>Username</label>
                             <input type="text" name="username" value={this.state.username} onChange={this.handleInputChange} placeholder="eg., johndoe54"/>
