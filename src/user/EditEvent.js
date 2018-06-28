@@ -113,14 +113,6 @@ class EditEvent extends Component {
 			.catch(err => console.error(err))
 	  }
 	  
-	componentDidMount() {
-		require.ensure(["scriptjs"], () => {
-			const scriptjs = require("scriptjs");
-			scriptjs("https://maps.googleapis.com/maps/api/js?key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E&libraries=places&language=en", () => {
-				this.setState({loadGoogleLib: true})
-			})
-		})
-    }
 	
 	render() {
 		return (
@@ -152,7 +144,7 @@ class EditEvent extends Component {
 							</div>
 							<div className="editEventItem">
 								<label className="editEventLabel">Location</label>
-								{this.state.loadGoogleLib ? 
+								 
 								<PlacesAutocomplete
 									value={this.state.location}
 									onChange={this.handleAddressChange}
@@ -179,7 +171,7 @@ class EditEvent extends Component {
 									  </div>
 									)}
 								  </PlacesAutocomplete>
-								: null}
+								
 							</div>
 						</div>
 

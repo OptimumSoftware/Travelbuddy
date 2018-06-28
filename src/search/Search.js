@@ -6,6 +6,8 @@ import ResultList from './ResultList.js';
 import CategoryList from './CategoryList.js';
 import RadiusFilter from './RadiusFilter.js';
 import Modal   from '../modal/Modal';
+import PlacesAutocomplete from 'react-places-autocomplete';
+import { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
 
 class Search extends Component {
     constructor(props) {
@@ -34,7 +36,8 @@ class Search extends Component {
         };
 
         this.getCategories()
-
+		this.handleAddressChange = this.handleAddressChange.bind(this);
+		this.handleAddressSelect = this.handleAddressSelect.bind(this);
     }
 
     apikey = "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E";
@@ -47,13 +50,6 @@ class Search extends Component {
                 currentLng: position.coords.longitude
             })
         })
-		
-		require.ensure(["scriptjs"], () => {
-			const scriptjs = require("scriptjs");
-			scriptjs("https://maps.googleapis.com/maps/api/js?key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E&libraries=places&language=en", () => {
-				this.setState({loadGoogleLib: true})
-			})
-		})
     }
 
 
@@ -250,6 +246,19 @@ class Search extends Component {
             radius: e.target.value
         })
     }
+	
+	handleAddressChange(input) {
+		this.setState({ input })
+	}
+	
+	handleAddressSelect(input) {
+		geocodeByAddress(input)
+			.then(results => {
+				this.setState({input: results[0]['formatted_address']})
+			})
+			.catch(err => console.error(err))
+	}
+
 
     render() {
 
@@ -279,7 +288,37 @@ class Search extends Component {
                             <option value="city" >City search</option>
                             <option value="keyword" >Keyword search</option>
                         </select>
-						<input type={"text"} name={"place"} onChange={this.handleChange} />
+						{this.state.searchType == "city" ?
+							<PlacesAutocomplete
+								value={this.state.input}
+								onChange={this.handleAddressChange}
+								onSelect={this.handleAddressSelect}
+							  >
+								{({ getInputProps, suggestions, getSuggestionItemProps }) => (
+									<div id="autoSearch">
+										<input
+										  {...getInputProps({
+											placeholder: 'Groningen',
+											name: 'place'
+										  })}
+										  id="autoSearchBar"
+										/>
+										<div className="search-suggest-select-container">
+										  {suggestions.map(item => {
+											const className = item.active ? 'search-suggest-item-active' : 'search-suggest-item-inactive';
+											return (
+											  <div {...getSuggestionItemProps(item, { className })} id='search-suggest-item'>
+												<span>{item.description}</span>
+											  </div>
+											)
+										  })}
+										</div>
+									</div>
+								)}
+							</PlacesAutocomplete>
+							:
+							<input type={"text"} name={"place"} onChange={this.handleChange} value={this.state.input} />
+						}
                         <button type={"submit"} name={"submit"} onClick={this.checkSearch}>Zoek</button>
                     </div>
                 </div>
