@@ -82,53 +82,33 @@ class Home extends Component {
 			photos: [logo1,logo2,logo3,logo4],
 			query: "",
 			range: "5000",
-			userId: "",
-			loggedIn: false,
 			events: [],
 			eventPlace: null
 		};
 		
-		const url = "/api/loginCheck";
+
+		const url = "/api/user/preferences";
 		axios.get(url)
 			.then(response => {
-				if(response.data['username']) {
-					const usr = response.data['username'];
-					this.setState({
-						loggedIn: true,
-						userId: usr
-					});
-				}
-			})
-			.then(() => {
-				if(this.state.loggedIn) {
-					const url = "/api/user/preferences";
-					axios.get(url)
-						.then(response => {
-							if(response.data) {
-								if(JSON.stringify(response.data) === '{}') {
-									this.setDefaultCategories();
-								}
-								else {
-									let temp = [];
-									for (var key in response.data) {
-										temp.push(key)
-									}
-									this.setState({
-										categories: temp
-									})
-								}
-							}
-							else {
-								this.setDefaultCategories();
-								
-							}
-						});
+				if(response.data) {
+					if(JSON.stringify(response.data) === '{}') {
+						this.setDefaultCategories();
+					}
+					else {
+						let temp = [];
+						for (var key in response.data) {
+							temp.push(key)
+						}
+						this.setState({
+							categories: temp
+						})
+					}
 				}
 				else {
 					this.setDefaultCategories();
 				}
-			})		
-	
+			});
+
         
 
         navigator.geolocation.getCurrentPosition((position) => {
@@ -136,9 +116,6 @@ class Home extends Component {
                 lat: position.coords.latitude,
                 lon: position.coords.longitude
             })
-            console.log("Deze waardes: ")
-            console.log(this.state.lat)
-            console.log(this.state.lon)
         })
 
 		var proxy  = 'https://cors-anywhere.herokuapp.com/';
@@ -161,8 +138,6 @@ class Home extends Component {
                     })
                 }
 
-                console.log(response.data);
-                console.log(`Latitude ${this.state.latitude}, Longitude: ${this.state.longitude} `);
                 let places = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?language=EN&location='
                     + this.state.latitude + ',' + this.state.longitude;
                 this.setState({query: places})
@@ -171,14 +146,12 @@ class Home extends Component {
                     .then(wiki => {
                         this.setState({text: wiki.data});
                         this.setState({wikitext: wiki.data[2][0]})
-                        //console.log(wiki.data)
                     });
 
                 var locationURL  =  'https://maps.googleapis.com/maps/api/geocode/json?language=EN&latlng=' + this.state.latitude + ',' + this.state.longitude + '&key=AIzaSyCRNHsASJT7nxChb3zBLeH2hGJdZGMIZGQ'
                 axios.get(locationURL)
                     .then(location => {
                         this.setState({gpsCity: location.data.results[0].address_components[3].long_name});
-                        console.log(location.data)
                         if (this.state.gpsCity){
                             this.setState({
                                 city: this.state.gpsCity
@@ -218,14 +191,7 @@ class Home extends Component {
 		this.setState({
 			categories: ['restaurant', 'bar', 'car_dealer', 'hotel']
 		})
-	}
-
-
-    componentDidMount(){
-
-		
-    }
-	
+	}	
 	
     handleClick = () => {
         this.setState({
@@ -275,9 +241,6 @@ class Home extends Component {
         })
     }
 
-
-
-
     render() {
         /* loop door alle catergories in state en maak places (div's) aan*/
         let textcategories = null
@@ -320,25 +283,14 @@ class Home extends Component {
 				</div>
 			);
 		}
-
+		
 		
         <Map
             latitude = {this.state.latitude}
             longitude = {this.state.longitude}
             zoom = {this.state.zoom}
         />
-
-        {/*// let test = null;*/}
-        {/*//*/}
-        {/*// test = (*/}
-        {/*//     <Test*/}
-        {/*//         latitude = {this.state.latitude}*/}
-        {/*//         longitude = {this.state.longitude}*/}
-        {/*//         zoom = {this.state.range}*/}
-        {/*//     />*/}
-        {/*// );*/}
-
-
+		
 
         let viewModal = null;
         if(this.state.showModal){
