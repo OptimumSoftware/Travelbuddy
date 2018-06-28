@@ -11,8 +11,10 @@ import Profile from './user/Profile';
 import AddEvent from './user/AddEvent';
 import EditEvent from './user/EditEvent';
 import Places from './places/Places';
+import Events from './places/Events';
 import City   from './city/City';
 import Modal   from './modal/Modal';
+import EventModal from './modal/EventModal';
 import Map   from './map/Map';
 import Search   from './search/Search.js';
 
@@ -81,7 +83,9 @@ class Home extends Component {
 			query: "",
 			range: "5000",
 			userId: "",
-			loggedIn: false
+			loggedIn: false,
+			events: [],
+			eventPlace: null
 		};
 		
 		const url = "/api/loginCheck";
@@ -152,7 +156,7 @@ class Home extends Component {
 
                 console.log(response.data);
                 console.log(`Latitude ${this.state.latitude}, Longitude: ${this.state.longitude} `);
-                let places = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='
+                let places = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?language=EN&location='
                     + this.state.latitude + ',' + this.state.longitude;
                 this.setState({query: places})
                 var url = 'https://en.wikipedia.org//w/api.php?action=opensearch&format=json&search=' + this.state.city;
@@ -163,7 +167,7 @@ class Home extends Component {
                         //console.log(wiki.data)
                     });
 
-                var locationURL  =  'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this.state.latitude + ',' + this.state.longitude + '&key=AIzaSyCRNHsASJT7nxChb3zBLeH2hGJdZGMIZGQ'
+                var locationURL  =  'https://maps.googleapis.com/maps/api/geocode/json?language=EN&latlng=' + this.state.latitude + ',' + this.state.longitude + '&key=AIzaSyCRNHsASJT7nxChb3zBLeH2hGJdZGMIZGQ'
                 axios.get(locationURL)
                     .then(location => {
                         this.setState({gpsCity: location.data.results[0].address_components[3].long_name});
@@ -172,7 +176,7 @@ class Home extends Component {
                             this.setState({
                                 city: this.state.gpsCity
                             })
-                            var url = 'https://en.wikipedia.org//w/api.php?action=opensearch&format=json&search=' + this.state.city;
+                            var url = 'https://en.wikipedia.org//w/api.php?action=opensearch&format=json&language=EN&search=' + this.state.city;
                             axios.get(proxy + url)
                                 .then(wiki => {
                                     this.setState({text: wiki.data});
@@ -185,7 +189,22 @@ class Home extends Component {
                     });
 
 
-            });
+            })
+			.then(() => {
+				axios.get("/api/getEvents?city=" + this.state.city + "&country=" + this.state.country_name)
+					.then(resp => {
+						resp = resp.data
+						if(resp) {
+							this.setState({
+								eventPlace: resp[0]
+							});
+							resp = resp.slice(1);
+						}
+						this.setState({
+							events: resp
+						});
+					});
+			});
 	}
 
 
@@ -214,10 +233,27 @@ class Home extends Component {
             modalId: id,
         })
     }
+	
+	eventModalHandler = (name, image, address, description, startDate, startTime, endDate, endTime, id, lat, lng) => {
+		this.setState({
+			showEventModal: true,
+			modalName: name,
+            modalImage: image,
+            modalAddress: address,
+            modalDesc: description,
+			modalStartDate: startDate,
+			modalStartTime: startTime,
+			modalEndDate: endDate,
+			modalEndTime: endTime,
+            modalId: id,
+			modalLat: lat,
+			modalLng: lng
+		})
+	}
 
 
     hideModal = () => {
-        this.setState({showModal: false})
+        this.setState({showModal: false, showEventModal: false})
     };
 
     radiusHandler = (e) => {
@@ -262,9 +298,17 @@ class Home extends Component {
             </div>
         );
 
+		
+		let events = null;
+		if(this.state.events && this.state.events.length) {
+			events = (
+				<div>
+					<Events events={this.state.events} handler={this.eventModalHandler} place={this.state.eventPlace}/>
+				</div>
+			);
+		}
 
-
-
+		
         <Map
             latitude = {this.state.latitude}
             longitude = {this.state.longitude}
@@ -301,7 +345,27 @@ class Home extends Component {
                 currentLng = {this.state.longitude}
             />
         }
-
+		else if(this.state.showEventModal) {
+			viewModal = <EventModal
+                click={this.hideModal}
+                image = {this.state.modalImage}
+                name = {this.state.modalName}
+                address={this.state.modalAddress}
+                photo = {this.state.modalImage}
+                id = {this.state.modalId}
+				lat = {this.state.modalLat}
+                lng = {this.state.modalLng}
+                description = {this.state.modalDesc}
+				startDate = {this.state.modalStartDate}
+				startTime = {this.state.modalStartTime}
+				endDate = {this.state.modalEndDate}
+				endTime = {this.state.modalEndTime}
+				latitude = {this.state.latitude}
+                longitude = {this.state.longitude}
+                currentLat = {this.state.latitude}
+                currentLng = {this.state.longitude}
+            />
+		}
 
 
 
@@ -333,6 +397,7 @@ class Home extends Component {
 
                 {viewModal}
                 {textcategories}
+				{events}
                 
             </main>
             </div>

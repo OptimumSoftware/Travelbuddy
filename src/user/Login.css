@@ -12,6 +12,20 @@
 	padding-left: 25px;
 }
 
+#registerForm label {
+	display: block;
+    margin-bottom: 2px;
+}
+
+.registerBtn {
+	margin-top: 11px !important;
+}
+
+#loginForm label {
+	display: block;
+    margin-bottom: 2px;
+}
+
 #forgotPassword {
 	display: block;
 	margin-bottom: 8px;
@@ -31,6 +45,14 @@
 	line-height: 28px;
 	margin-bottom: 14px;
 	font-size: 14px;
+}
+
+#registerForm select {
+	width: 238px;
+    height: 40px;
+	padding: 4px 4px 4px 8px;
+	font-size: 14px;
+	line-height: 28px;
 }
 
 #signIn button {

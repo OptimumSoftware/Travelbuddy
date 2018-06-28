@@ -20,6 +20,9 @@
     border: 1px solid #888;
     width: 50%;
     overflow: hidden;
+	
+	border-radius: 5px;
+	background-color: #FFF;
 }
 
 .close {
@@ -33,23 +36,59 @@
     margin-left: 2vw;
     height: 200px;
     width: 300px;
+	
+	margin-left: 0;
+}
+
+#eventAddress {
+	margin-top: 0;
+}
+
+.statsLocation { 
+	margin-top: 30px;
+}
+
+#eventDesc {
+	margin-bottom: 30px;
 }
 
 #nameLocation {
     left: -10vw;
+	font-weight: bold;
+    font-size: 20px;
+    margin-top: 12px;
 }
 
 .left {
     width: 50%;
     display: inline-block;
     float: left;
-    margin-top: 6.5vh;
+	vertical-align: top;
+    margin-top: 3vh;
 }
 
 #right {
     width: 50%;
     display: inline-block;
     float: left;
+	
+	width: 49%;
+	border-left: 1px solid #d6d6d6;
+    height: 100%;
+	margin-bottom: -99999px;
+    padding-bottom: 99999px;
+}
+
+#mapContainer {
+	width: 100%;
+    overflow: hidden;
+    margin-top: 18px;
+    padding-top: 20px;
+    border-top: 1px solid #d6d6d6;
+}
+
+#topWrapper {
+	overflow: hidden;
 }
 
 .center {
@@ -58,6 +97,8 @@
 
 .textLocation {
     color: white;
+	
+	color: black;
 }
 
 .voteLocation {
@@ -71,4 +112,8 @@
 
 #heartIcon {
 	vertical-align: middle;
+}
+
+#nameLocation {
+	
 }

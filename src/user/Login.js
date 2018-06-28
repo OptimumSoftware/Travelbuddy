@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Login.css';
+import axios from 'axios';
 
 class Login extends Component {
 	render() {
@@ -40,10 +41,10 @@ class LoginForm extends Component {
 				<h3>Already a member?</h3>
 				<form onSubmit={this.handleSubmit} action='/login' method='POST'>
 					<label>Email address</label>
-					<input type="text" name="email" id={'email'} value={this.state.email} onChange={this.handleInputChange}/>
+					<input type="text" name="email" id={'email'} value={this.state.email} onChange={this.handleInputChange} placeholder="eg., johndoe@gmail.com"/>
 					
 					<label>Password</label>
-					<input type="password" name="password" value={this.state.password} onChange={this.handleInputChange}/>
+					<input type="password" name="password" value={this.state.password} onChange={this.handleInputChange} placeholder="eg., •••••••"/>
 					
 					<label id="forgotPassword"><a href="">Forgot password</a></label>
 					
@@ -78,7 +79,13 @@ class RegisterForm extends Component {
 			email: "",
 			password: "",
 			country: "",
+			countries: []
 		}
+		
+		axios.get("/api/countries")
+				.then(response => {
+					this.setState({countries: response.data});
+				})
 		
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -97,27 +104,31 @@ class RegisterForm extends Component {
 		return (
 			<div id="registerForm" >
 						<h3>Register</h3>
-						<form onSubmit={this.handleSubmit} action='/login' method='POST'>
+						<form onSubmit={this.handleSubmit} action='/register' method='POST'>
 
-                            <label>username</label>
-                            <input type="text" name="username" value={this.state.username} onChange={this.handleInputChange}/>
+                            <label>Username</label>
+                            <input type="text" name="username" value={this.state.username} onChange={this.handleInputChange} placeholder="eg., johndoe54"/>
 
                             <label>Email address</label>
-							<input type="text" name="email" value={this.state.email} onChange={this.handleInputChange}/>
+							<input type="text" name="email" value={this.state.email} onChange={this.handleInputChange} placeholder="eg., johndoe@gmail.com"/>
 
-							<label>firstname</label>
-							<input type="text" name="firstname" value={this.state.firstname} onChange={this.handleInputChange}/>
+							<label>First Name</label>
+							<input type="text" name="firstname" value={this.state.firstname} onChange={this.handleInputChange} placeholder="eg., John"/>
 
-							<label>lastname</label>
-							<input type="text" name="lastname" value={this.state.lastname} onChange={this.handleInputChange}/>
+							<label>Last Name</label>
+							<input type="text" name="lastname" value={this.state.lastname} onChange={this.handleInputChange} placeholder="eg., Doe"/>
 
 							<label>Password</label>
-                            <input type="password" name="password" value={this.state.password} onChange={this.handleInputChange}/>
+                            <input type="password" name="password" value={this.state.password} onChange={this.handleInputChange} placeholder="eg., •••••••"/>
 
-                            <label>country</label>
-                            <input type="password" name="country" value={this.state.country} onChange={this.handleInputChange}/>
+                            <label>Country</label>
+                            <select name="country" value={this.state.country} onChange={this.handleInputChange}>
+								{this.state.countries.map((item) => (
+									<option value={item.code}>{item.name}</option>
+								))}
+							</select>
 
-							<button type="submit" name="submit" disabled={!isEnabled} value='register'>Register</button>
+							<button type="submit" name="submit" disabled={!isEnabled} value='register' className='registerBtn'>Register</button>
 						</form>
 					</div>
 		);

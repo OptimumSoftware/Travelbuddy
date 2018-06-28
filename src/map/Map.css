@@ -3,3 +3,10 @@
     width: 100px;
     height: 100px;
 }
+#mapIcon {
+    display: inline-block;
+    margin-right: 15px;
+    margin-left: 15px;
+    width: 40px;
+    height: 35px;
+}
