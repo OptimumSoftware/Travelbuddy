@@ -6,9 +6,12 @@ import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import xIcon from '@fortawesome/fontawesome-free-solid/faTimes'
 import deleteIcon from '@fortawesome/fontawesome-free-regular/faTimesCircle'
 import axios from 'axios';
+import { Link } from 'react-router-dom'
 
 import solidStar from '@fortawesome/fontawesome-free-solid/faStar'
 import regularStar from '@fortawesome/fontawesome-free-regular/faStar'
+import plusSquare from '@fortawesome/fontawesome-free-regular/faPlusSquare'
+import minusSquare from '@fortawesome/fontawesome-free-regular/faMinusSquare'
 
 class Profile extends Component {
 	constructor(props) {
@@ -39,12 +42,14 @@ class Profile extends Component {
 				<div id="profileWrapper">				
 					<Favorites userId={this.state.userId} loggedIn={this.state.loggedIn} />
 					<Preferences userId={this.state.userId} loggedIn={this.state.loggedIn} />
+                    <FriendsOverview userId={this.state.userId} loggedIn={this.state.loggedIn} />
 					<Settings userId={this.state.userId} loggedIn={this.state.loggedIn} />
 				</div>
 			</main>
 		);
 	}
 }
+
 
 class Favorites extends Component {
 
@@ -109,189 +114,268 @@ class Favorites extends Component {
 
 class Preferences extends Component {
 
-	constructor(props) {
-		super(props);
+    constructor(props) {
+        super(props);
 
-		this.state = {
-			jsonCategories: {},
-			categories: [],
-			results: [],
-			searchBar: ""
-		}
-		
-		this.emptySearch = this.emptySearch.bind(this);
-		this.handleChange = this.handleChange.bind(this);
-		
-		axios.get('/api/categories')
-			.then(result => {
-				let temp = [];
-				this.setState({
-					jsonCategories: result.data
-				})
-					
-				for (var key in this.state.jsonCategories) {
-					temp.push(key)
-					console.log(key)
-				}
-				this.setState({
-					categories: temp
-				})
-				console.log(this.state.categories)
-			}); 	 
-	}
+        this.state = {
+            jsonCategories: {},
+            categories: [],
+            results: [],
+            searchBar: ""
+        }
+
+        this.emptySearch = this.emptySearch.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+
+        axios.get('/api/categories')
+            .then(result => {
+                let temp = [];
+                this.setState({
+                    jsonCategories: result.data
+                })
+
+                for (var key in this.state.jsonCategories) {
+                    temp.push(key)
+                    console.log(key)
+                }
+                this.setState({
+                    categories: temp
+                })
+                console.log(this.state.categories)
+            });
+    }
 
     handleChange(e) {
-		const targetField = e.target;
-		const value = targetField.value;
-		const field = targetField.name;
-		this.setState({
-			[field]: value
-		});
-		
-		let length = e.target.value.length
-		let result = [];
+        const targetField = e.target;
+        const value = targetField.value;
+        const field = targetField.name;
+        this.setState({
+            [field]: value
+        });
+
+        let length = e.target.value.length
+        let result = [];
         for (let i = 0; i < this.state.categories.length; i++) {
-        	let word = this.state.categories[i];
+            let word = this.state.categories[i];
             if (word.substring(0, length) == e.target.value.toLowerCase()) {
                 result.push(word);
             }
-		}
-		if (e.target.value == "") {
+        }
+        if (e.target.value == "") {
             this.setState({
                 results: []
             })
-		} else {
+        } else {
             this.setState({
                 results: result
             })
-		}
+        }
 
     }
-	
-	emptySearch() {
-		this.setState({
-			searchBar: "",
-			results: []
-		})
-	}
 
-	render() {
-		return (
-			<div id="preferences">
-				<h2>Preferences</h2>
-				Add preferences: 
-				<input type="text" name="searchBar" value={this.state.searchBar} placeholder="Museums" onChange={this.handleChange} />
-				<ResultList results={this.state.results} object={this.state.jsonCategories} emptySearch={this.emptySearch} userId={this.props.userId} loggedIn={this.props.loggedIn}/>
-			</div>
-		);
-	}
-}
-
-class ResultList extends Component {
-
-	constructor(props) {
-		super(props);
-		
-		this.state = {
-			preferences: [],
-			userId: "",
-			loggedIn: false
-		}
-		
-		this.addPreference = this.addPreference.bind(this);
-		this.removePreference = this.removePreference.bind(this);
-	}
-	
-	componentDidUpdate() {
-		if(this.state.userId !== this.props.userId) {
-			this.setState({
-				userId: this.props.userId,
-				loggedIn: this.props.loggedIn
-			});
-			this.loadData();
-		}
-	}
-	
-	loadData() {
-		if(this.props.loggedIn) {
-			setTimeout(function() {
-				const url = "/api/user/preferences/" + this.props.userId;
-				axios.get(url)
-					.then(response => {
-						console.log(response)
-						let temp = [];
-						for (var key in response.data) {
-							temp.push(key)
-						}
-						console.log(temp)
-						this.setState({
-							preferences: temp
-						})
-						console.log(this.state.preferences)
-						
-					}); 
-			}.bind(this), 1000);
-		}
-	}
-
-    addPreference(i, result) {
-		let pref = []
-		let check = 0;
-		console.log(i)
-		for (let index = 0; index < this.state.preferences.length; index++) {
-			pref.push(this.state.preferences[index])
-			if (this.state.preferences[index] == result) {
-				check++;
-			}
-		}
-		pref.push(result)
-		if (check == 0) {
-			if(this.props.loggedIn) {
-				const url = "/api/user/preferences/" + this.props.userId + "/" + i
-				axios.post(url)
-				this.setState({
-					preferences: pref
-				})
-				this.props.emptySearch();
-			}
-		}
-		console.log(this.state.preferences)
-	}
-
-    removePreference(index, name, i) {
-		if(this.props.loggedIn) {
-			const url = "/api/user/preferences/" + this.props.userId + "/" + i
-			axios.delete(url)
-			let array = this.state.preferences;
-			array.splice(index, 1);
-			this.setState({
-				preferences: array
-			});
-		}
+    emptySearch() {
+        this.setState({
+            searchBar: "",
+            results: []
+        })
     }
 
     render() {
         return (
-				<div>
-					<div id={"suggested"}>
-						<ul className={"suggestCategories"}>
-						{this.props.results.map((result) => (
-							<li value={this.props.object[result]} name={result} onClick={this.addPreference.bind(this, this.props.object[result], result)}>{result.split('_').join(' ')}</li>
-						))}
-						</ul>
-					</div>
-					<div id="preferenceList">
-                        {this.state.preferences.map((preference, index) => {return (
-                            <label className="preference" onClick={() => this.removePreference(index, preference, this.props.object[preference])}>
-                                {preference.split('_').join(' ')}
-                                <FontAwesomeIcon className="closeIcon" icon={xIcon} />
-                            </label>
-                        );})}
-                    </div>
-				</div>
+            <div id="preferences">
+                <h2>Preferences</h2>
+                Add preferences:
+                <input type="text" name="searchBar" value={this.state.searchBar} placeholder="Museums" onChange={this.handleChange} />
+                <ResultList results={this.state.results} object={this.state.jsonCategories} emptySearch={this.emptySearch} userId={this.props.userId} loggedIn={this.props.loggedIn}/>
+            </div>
+        );
+    }
+}
+
+
+class ResultList extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            preferences: [],
+            userId: "",
+            loggedIn: false
+        }
+
+        this.addPreference = this.addPreference.bind(this);
+        this.removePreference = this.removePreference.bind(this);
+    }
+
+    componentDidUpdate() {
+        if(this.state.userId !== this.props.userId) {
+            this.setState({
+                userId: this.props.userId,
+                loggedIn: this.props.loggedIn
+            });
+            this.loadData();
+        }
+    }
+
+    loadData() {
+        if(this.props.loggedIn) {
+            setTimeout(function() {
+                const url = "/api/user/preferences/" + this.props.userId;
+                axios.get(url)
+                    .then(response => {
+                        console.log(response)
+                        let temp = [];
+                        for (var key in response.data) {
+                            temp.push(key)
+                        }
+                        console.log(temp)
+                        this.setState({
+                            preferences: temp
+                        })
+                        console.log(this.state.preferences)
+
+                    });
+            }.bind(this), 1000);
+        }
+    }
+
+    addPreference(i, result) {
+        let pref = []
+        let check = 0;
+        console.log(i)
+        for (let index = 0; index < this.state.preferences.length; index++) {
+            pref.push(this.state.preferences[index])
+            if (this.state.preferences[index] == result) {
+                check++;
+            }
+        }
+        pref.push(result)
+        if (check == 0) {
+            if(this.props.loggedIn) {
+                const url = "/api/user/preferences/" + this.props.userId + "/" + i
+                axios.post(url)
+                this.setState({
+                    preferences: pref
+                })
+                this.props.emptySearch();
+            }
+        }
+        console.log(this.state.preferences)
+    }
+
+    removePreference(index, name, i) {
+        if(this.props.loggedIn) {
+            const url = "/api/user/preferences/" + this.props.userId + "/" + i
+            axios.delete(url)
+            let array = this.state.preferences;
+            array.splice(index, 1);
+            this.setState({
+                preferences: array
+            });
+        }
+    }
+
+    render() {
+        return (
+            <div>
+                <div id={"suggested"}>
+                    <ul className={"suggestCategories"}>
+                        {this.props.results.map((result) => (
+                            <li value={this.props.object[result]} name={result} onClick={this.addPreference.bind(this, this.props.object[result], result)}>{result.split('_').join(' ')}</li>
+                        ))}
+                    </ul>
+                </div>
+                <div id="preferenceList">
+                    {this.state.preferences.map((preference, index) => {return (
+                        <label className="preference" onClick={() => this.removePreference(index, preference, this.props.object[preference])}>
+                            {preference.split('_').join(' ')}
+                            <FontAwesomeIcon className="closeIcon" icon={xIcon} />
+                        </label>
+                    );})}
+                </div>
+            </div>
         )
     }
 
+}
+
+
+class FriendsOverview extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            name: '',
+            jsonCategories: {},
+            userList: [],
+            results: [],
+            searchBar: "failed",
+			status: []
+        }
+
+
+        axios.get('/api/userList')
+            .then(result => {
+                let temp = [];
+                console.log(temp)
+                this.setState({
+                    jsonCategories: result.data.users
+                })
+
+                {this.state.jsonCategories.map((values) => {
+                    temp.push(values[0])
+                })}
+
+                this.setState({
+                    userList: temp
+                })
+                console.log("de userlist" + this.state.userList)
+            });
+
+
+    }
+
+
+
+    namechangedhandler = (event) => {
+        this.setState(
+            {name: event.target.value}
+        )
+
+    }
+
+    deleteFriend = (event) => {
+        const url = '/api/user/friends/' + this.state.name;
+        axios.delete(url).then((result) => {
+            this.setState({
+                status: result.data.deleteStatus,
+				name: ''
+            })
+            console.log("resultaat van delete " + this.state.status)
+        })
+	}
+
+    render() {
+        const url = '/api/user/friends';
+        return (
+            <div className={'friends'}>
+                <h2 id={'friendsTag'}>Friends</h2>
+                <h4 id={'friendH4'}>Add a friend</h4>
+                <h5 id='error' style={{display: this.state.status ? 'none' : 'block'}}>Something went wrong, please check if you used the correct username</h5>
+                <div className={'friendsContent'}>
+                    <form id={'friendForm'} action={url} method='POST'>
+                        <input id="addFriends" type="text" value={this.state.name} onChange={this.namechangedhandler} name="friend"  placeholder={'Username'}  />
+                        <button type='submit' id={'addButton'}  ><FontAwesomeIcon id={'plusIcon'}  icon={plusSquare}/></button>
+					</form>
+                    <button id={'deleteButton'} onClick={() => this.deleteFriend()}><FontAwesomeIcon id={'minusIcon'} icon={minusSquare}/></button>
+					<Link id={'friendLink'} to="/friends" >See friends</Link>
+                </div>
+            </div>
+
+        );
+
+    }
 }
 
 class Settings extends Component {

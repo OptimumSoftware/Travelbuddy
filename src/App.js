@@ -15,6 +15,7 @@ import City   from './city/City';
 import Modal   from './modal/Modal';
 import Map   from './map/Map';
 import Search   from './search/Search.js';
+import Friends from './friends/Friends.js';
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import faFilter from '@fortawesome/fontawesome-free-solid/faFilter';
@@ -43,8 +44,9 @@ class App extends Component {
                     <Route path="/login" component={Login} />
                     <Route path="/profile" component={Profile} />
                     <Route path="/addEvent" component={AddEvent} />
-					<Route path="/editEvent" component={EditEvent} />
+                    <Route path="/editEvent" component={EditEvent} />
                     <Route path="/search" component={Search} />
+                    <Route path="/friends" component={Friends} />
 
                     <Footer />
 
@@ -55,70 +57,70 @@ class App extends Component {
 }
 
 class Home extends Component {
-	constructor(props) {
-		super(props);
+    constructor(props) {
+        super(props);
 
-		this.state = {
-			region_name: ' ',
-			counter: 0,
-			zoom: 1,
-			text: ' ',
-			city: '',
-			continent_name: ' ',
-			latitude: ' ',
-			longitude: ' ',
-			wikitext: ' ',
-			calling_code: ' ',
-			gpsCity: '',
-			country_name: ' ',
-			lat: null,
-			lon: null,
-			name: ' ',
-			categories: [],
-			id: "hier moet unieke waarde komen",
-			show: false,
-			photos: [logo1,logo2,logo3,logo4],
-			query: "",
-			range: "5000",
-			userId: "",
-			loggedIn: false
-		};
+        this.state = {
+            region_name: ' ',
+            counter: 0,
+            zoom: 1,
+            text: ' ',
+            city: '',
+            continent_name: ' ',
+            latitude: ' ',
+            longitude: ' ',
+            wikitext: ' ',
+            calling_code: ' ',
+            gpsCity: '',
+            country_name: ' ',
+            lat: null,
+            lon: null,
+            name: ' ',
+            categories: [],
+            id: "hier moet unieke waarde komen",
+            show: false,
+            photos: [logo1,logo2,logo3,logo4],
+            query: "",
+            range: "5000",
+            userId: "",
+            loggedIn: false
+        };
 
-		const url = "/api/loginCheck";
-		axios.get(url)
-			.then(response => {
-				if(response.data['username']) {
-					const usr = response.data['username'];
-					this.setState({
-						loggedIn: true,
-						userId: usr
-					});
-				}
-			})
-			.then(() => {
-				if(this.state.loggedIn) {
-					console.log(this.state.userId)
-					const url = "/api/user/preferences/" + this.state.userId;
-					axios.get(url)
-						.then(response => {
-							let temp = [];
-							for (var key in response.data) {
-								temp.push(key)
-							}
-							this.setState({
-								categories: temp
-							})
-							console.log(this.state.categories)
-						});
-				}
-				else {
-					this.setState({
-						categories: ['restaurant', 'bar', 'car_dealer', 'hotel']
-					});
-				}
-			})		
-	
-        
+        const url = "/api/loginCheck";
+        axios.get(url)
+            .then(response => {
+                if(response.data['username']) {
+                    const usr = response.data['username'];
+                    this.setState({
+                        loggedIn: true,
+                        userId: usr
+                    });
+                }
+            })
+            .then(() => {
+                if(this.state.loggedIn) {
+                    console.log(this.state.userId)
+                    const url = "/api/user/preferences/" + this.state.userId;
+                    axios.get(url)
+                        .then(response => {
+                            let temp = [];
+                            for (var key in response.data) {
+                                temp.push(key)
+                            }
+                            this.setState({
+                                categories: temp
+                            })
+                            console.log(this.state.categories)
+                        });
+                }
+                else {
+                    this.setState({
+                        categories: ['restaurant', 'bar', 'car_dealer', 'hotel']
+                    });
+                }
+            })
+
+
 
         navigator.geolocation.getCurrentPosition((position) => {
             this.setState({
@@ -130,7 +132,7 @@ class Home extends Component {
             console.log(this.state.lon)
         })
 
-		var proxy  = 'https://cors-anywhere.herokuapp.com/';
+        var proxy  = 'https://cors-anywhere.herokuapp.com/';
         axios.get('http://api.ipstack.com/check?access_key=201a9fbb71fcb2b3195f6626795b5907')
             .then(response => {
                 this.setState({ continent_name: response.data.continent_name,
@@ -186,15 +188,15 @@ class Home extends Component {
 
 
             });
-	}
+    }
 
 
     componentDidMount(){
 
 
     }
-	
-	
+
+
     handleClick = () => {
         this.setState({
             show: !this.state.show
@@ -308,33 +310,33 @@ class Home extends Component {
         return (
             <div>
                 <div id={'mainBackground'}></div>
-            <main>
+                <main>
 
-                <City city={this.state.city} wikitext={this.state.wikitext} name={this.state.name}
-                      continent_name={this.state.continent_name} country_flag={this.state.country_flag}
-                      calling_code={this.state.calling_code} region_name={this.state.region_name}
-                      country_name={this.state.country_name}/>
+                    <City city={this.state.city} wikitext={this.state.wikitext} name={this.state.name}
+                          continent_name={this.state.continent_name} country_flag={this.state.country_flag}
+                          calling_code={this.state.calling_code} region_name={this.state.region_name}
+                          country_name={this.state.country_name}/>
 
-                <div id={'filter'} onClick={this.handleClick}>
-                    <FontAwesomeIcon icon={faFilter} />
-                </div>
-
-
-                <ToggleDisplay show={this.state.show}>
-                    <div id={'filterMenu'}>
-                        <p className={'filterMenuItems'}>Range</p>
-                        <p className={'filterMenuItems'}><input type="radio" name="range"  value="5000" onChange={this.radiusHandler} />5 km</p>
-                        <p className={'filterMenuItems'}><input type="radio" name="range"  value="10000" onChange={this.radiusHandler} />10 km</p>
-                        <p className={'filterMenuItems'}><input type="radio" name="range"  value="15000" onChange={this.radiusHandler} />15 km</p>
-                        <p className={'filterMenuItems'}><input type="radio" name="range"  value="20000" onChange={this.radiusHandler} />20 km</p>
-                        <p className={'filterMenuItems'}><input type="radio" name="range"  value="25000" onChange={this.radiusHandler} />25 km</p>
+                    <div id={'filter'} onClick={this.handleClick}>
+                        <FontAwesomeIcon icon={faFilter} />
                     </div>
-                </ToggleDisplay>
 
-                {viewModal}
-                {textcategories}
-                
-            </main>
+
+                    <ToggleDisplay show={this.state.show}>
+                        <div id={'filterMenu'}>
+                            <p className={'filterMenuItems'}>Range</p>
+                            <p className={'filterMenuItems'}><input type="radio" name="range"  value="5000" onChange={this.radiusHandler} />5 km</p>
+                            <p className={'filterMenuItems'}><input type="radio" name="range"  value="10000" onChange={this.radiusHandler} />10 km</p>
+                            <p className={'filterMenuItems'}><input type="radio" name="range"  value="15000" onChange={this.radiusHandler} />15 km</p>
+                            <p className={'filterMenuItems'}><input type="radio" name="range"  value="20000" onChange={this.radiusHandler} />20 km</p>
+                            <p className={'filterMenuItems'}><input type="radio" name="range"  value="25000" onChange={this.radiusHandler} />25 km</p>
+                        </div>
+                    </ToggleDisplay>
+
+                    {viewModal}
+                    {textcategories}
+
+                </main>
             </div>
         );
     }

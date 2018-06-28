@@ -65,7 +65,7 @@ class EditEvent extends Component {
 					})
 			})
 			.then(() => {
-				axios.get("/api/categories")
+				axios.get("/api/userList")
 					.then(response => {
 						response = response.data;
 						this.setState({
@@ -76,7 +76,7 @@ class EditEvent extends Component {
 							temp.push(key)
 						}
 						this.setState({
-							categories: temp
+							userList: temp
 						});
 					})
 			});

@@ -8,7 +8,7 @@ class CategoryList extends Component {
     render() {
         return (
             <ul className={"category-list"}>
-                {this.props.categories.map((category) => {
+                {this.props.userList.map((category) => {
                     return (
                         <li>
                             <input type="radio" name={"type"} value={category} onClick={this.props.click} />
