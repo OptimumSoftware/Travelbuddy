@@ -76,7 +76,7 @@ class EventModal extends Component {
 	vote(event) {
 		if(this.state.loggedIn) {
 			if(this.state.voted) {
-				axios.delete(this.state.url + this.state.placeId + "&userId=" + this.state.userId)
+				axios.delete(this.state.url + this.state.placeId)
 				.then(response => {
 					if(response.data['likes'] == "Error") {
 						console.log("Likes Error 1")
@@ -89,7 +89,7 @@ class EventModal extends Component {
 				});  
 			} 
 			else {
-				axios.post(this.state.url + this.state.placeId + "&userId=" + this.state.userId)
+				axios.post(this.state.url + this.state.placeId)
 				.then(response => {
 					if(response.data['likes'] == "Error") {
 						console.log("Likes Error 2");
@@ -110,7 +110,7 @@ class EventModal extends Component {
 	favoriteHandler(event) {
 		if(this.state.loggedIn) {
 			if(this.state.favoriteCheck) {
-				const url = "/api/user/favorite" + "?username=" + this.state.userId + "&id=" + this.props.id;
+				const url = "/api/user/favorite" + "?id=" + this.props.id;
 				axios.delete(url)
 				document.getElementById("heartIcon").style.color = "#000";
 				this.setState({
@@ -118,7 +118,7 @@ class EventModal extends Component {
 				})
 			}
 			else {
-				const url = "/api/user/favorite" + "?username=" + this.state.userId + "&eventId=" + this.props.id + "&type=event";
+				const url = "/api/user/favorite" + "?eventId=" + this.props.id + "&type=event";
 				axios.post(url)
 				document.getElementById("heartIcon").style.color = "red";
 				this.setState({
@@ -133,7 +133,7 @@ class EventModal extends Component {
 	
 	checkFavorite() {
 		if(this.state.loggedIn) {
-			axios.get("/api/user/checkFavorite" + "?username=" + this.state.userId + "&id=" + this.props.id)
+			axios.get("/api/user/checkFavorite" + "?id=" + this.props.id)
 				.then(response => {
 					document.getElementById("heartIcon").style.color = "#000";
 					console.log("Not liked yet")
@@ -161,7 +161,7 @@ class EventModal extends Component {
 			});
 			
 		if(this.state.loggedIn) {
-			const url = this.state.checkUrl + this.state.placeId + "&userId=" + this.state.userId;
+			const url = this.state.checkUrl + this.state.placeId;
 			axios.get(url)
 				.then(response => {
 					if(response.data == "Error") {

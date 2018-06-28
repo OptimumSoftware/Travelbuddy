@@ -30,10 +30,14 @@ class Modal extends Component {
     }
 
     render() {
-        let open = "Closed"
-        if (this.props.open) {
-            open = "Open now"
-        }
+		console.log(this.props.open)
+		let open = "No opening hours available";
+		if(this.props.open === false) {
+			open = "Closed"
+		}
+		if (this.props.open === true) {
+			open = "Open now"
+		}
 		
         return(
 
@@ -79,7 +83,7 @@ class Modal extends Component {
 	vote(event) {
 		if(this.state.loggedIn) {
 			if(this.state.voted) {
-				axios.delete(this.state.url + this.state.placeId + "&userId=" + this.state.userId)
+				axios.delete(this.state.url + this.state.placeId)
 				.then(response => {
 					if(response.data['likes'] == "Error") {
 						console.log("Likes Error 1")
@@ -92,7 +96,7 @@ class Modal extends Component {
 				});  
 			} 
 			else {
-				axios.post(this.state.url + this.state.placeId + "&userId=" + this.state.userId)
+				axios.post(this.state.url + this.state.placeId)
 				.then(response => {
 					if(response.data['likes'] == "Error") {
 						console.log("Likes Error 2");
@@ -113,7 +117,7 @@ class Modal extends Component {
 	favoriteHandler(event) {
 		if(this.state.loggedIn) {
 			if(this.state.favoriteCheck) {
-				const url = "/api/user/favorite" + "?username=" + this.state.userId + "&id=" + this.props.id;
+				const url = "/api/user/favorite" + "?id=" + this.props.id;
 				axios.delete(url)
 				document.getElementById("heartIcon").style.color = "#000";
 				this.setState({
@@ -121,7 +125,7 @@ class Modal extends Component {
 				})
 			}
 			else {
-				const url = "/api/user/favorite" + "?username=" + this.state.userId + "&placeId=" + this.props.id + "&type=place";
+				const url = "/api/user/favorite" + "?placeId=" + this.props.id + "&type=place";
 				axios.post(url)
 				document.getElementById("heartIcon").style.color = "red";
 				this.setState({
@@ -136,7 +140,7 @@ class Modal extends Component {
 	
 	checkFavorite() {
 		if(this.state.loggedIn) {
-			axios.get("/api/user/checkFavorite" + "?username=" + this.state.userId + "&id=" + this.props.id)
+			axios.get("/api/user/checkFavorite" + "?id=" + this.props.id)
 				.then(response => {
 					document.getElementById("heartIcon").style.color = "#000";
 					console.log("Not liked yet")
@@ -164,7 +168,7 @@ class Modal extends Component {
 			});
 			
 		if(this.state.loggedIn) {
-			const url = this.state.checkUrl + this.state.placeId + "&userId=" + this.state.userId;
+			const url = this.state.checkUrl + this.state.placeId;
 			axios.get(url)
 				.then(response => {
 					if(response.data == "Error") {
@@ -177,7 +181,7 @@ class Modal extends Component {
 						document.getElementById("voteIcon").style.color = "green";
 					}
 					else {
-						document.getElementById("voteIcon").style.color = "#fff";
+						document.getElementById("voteIcon").style.color = "#000";
 					}
 				});
 		}
