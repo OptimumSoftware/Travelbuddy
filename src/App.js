@@ -101,24 +101,31 @@ class Home extends Component {
 			})
 			.then(() => {
 				if(this.state.loggedIn) {
-					console.log(this.state.userId)
-					const url = "/api/user/preferences/" + this.state.userId;
+					const url = "/api/user/preferences";
 					axios.get(url)
 						.then(response => {
-							let temp = [];
-							for (var key in response.data) {
-								temp.push(key)
+							if(response.data) {
+								if(JSON.stringify(response.data) === '{}') {
+									this.setDefaultCategories();
+								}
+								else {
+									let temp = [];
+									for (var key in response.data) {
+										temp.push(key)
+									}
+									this.setState({
+										categories: temp
+									})
+								}
 							}
-							this.setState({
-								categories: temp
-							})
-							console.log(this.state.categories)
+							else {
+								this.setDefaultCategories();
+								
+							}
 						});
 				}
 				else {
-					this.setState({
-						categories: ['restaurant', 'bar', 'car_dealer', 'hotel']
-					});
+					this.setDefaultCategories();
 				}
 			})		
 	
@@ -205,6 +212,12 @@ class Home extends Component {
 						});
 					});
 			});
+	}
+	
+	setDefaultCategories() {
+		this.setState({
+			categories: ['restaurant', 'bar', 'car_dealer', 'hotel']
+		})
 	}
 
 

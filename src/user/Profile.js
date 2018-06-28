@@ -141,19 +141,27 @@ class UserEvents extends Component {
 		return(
 			<div id="userEvents">
 				<h2>Your events</h2>
-				<div id="userEventList">
-					{this.props.events.map(event => {
-						const url = "/editEvent?id=" + event.id
-						return (
-							<a href={url}>
-								<div id="userEvent">
-									<FontAwesomeIcon icon={editIcon} id="editIcon"/>
-									 <label id="userEventName">{event.name}</label>
-								</div>
-							</a>
+					{
+						this.props.events && this.props.events.length ? (
+							<div id="userEventList">
+								{this.props.events.map(event => {
+									const url = "/editEvent?id=" + event.id
+									return (
+										<a href={url}>
+											<div id="userEvent">
+												<FontAwesomeIcon icon={editIcon} id="editIcon"/>
+												 <label id="userEventName">{event.name}</label>
+											</div>
+										</a>
+									)
+								})}
+							</div>
 						)
-					})}
-				</div>
+						:
+						<div class="profileError">
+							No favorites!
+						</div>
+					}
 			</div>
 		)
 	}
@@ -165,16 +173,6 @@ class Favorites extends Component {
 		super(props)
 
         this.state = {
-            favorites: [
-                {name: "Cantina Mexicana",
-                    image: logo1,
-                    location: "Groningen",
-                    rating: 4},
-                {name: "Groninger Museum",
-                    image: logo2,
-                    location: "Groningen",
-                    rating: 5},
-            ],
 			items: [],
 			userId: "",
 			loggedIn: false,
@@ -323,89 +321,84 @@ class Favorites extends Component {
 			<div id="favorites">
 				<h2>Your favorite places</h2>
 				<div id="favoritesWrapper">
-					{this.state.items.map((item, index) => {
-						let img = place
-						if(item.type === "place") {						
-							if(item.placeId in this.state.placeDetails) {
-								const place = this.state.placeDetails[item.placeId]['result'];
-								if('photos' in place) {
-									img = this.imgUrl+place['photos'][0]['photo_reference']+this.key;
-								}
+					{
+						this.state.items && this.state.items.length ?
+							this.state.items.map((item, index) => {
+								let img = place
+								if(item.type === "place") {						
+									if(item.placeId in this.state.placeDetails) {
+										const place = this.state.placeDetails[item.placeId]['result'];
+										if('photos' in place) {
+											img = this.imgUrl+place['photos'][0]['photo_reference']+this.key;
+										}
 
-								return (
-									<div class="favorite">
-										<div onClick={() => this.modalHandler(
-													place.name,
-													img,
-													place.vicinity,
-													place.opening_hours.open_now, 
-													place.geometry.location.lat,
-													place.geometry.location.lng,
-													place.place_id
-											)}>
-											<div className="favoriteImg">
-												<img src={img} alt={item.id} />
+										return (
+											<div class="favorite">
+												<div onClick={() => this.modalHandler(
+															place.name,
+															img,
+															place.vicinity,
+															place.opening_hours.open_now, 
+															place.geometry.location.lat,
+															place.geometry.location.lng,
+															place.place_id
+													)}>
+													<div className="favoriteImg">
+														<img src={img} alt={item.id} />
+													</div>
+													<div class="placeInfo">
+														<label className="favoriteName">{place['name']}</label>
+														<div className="favoriteInfo">
+															<label className="favoriteLocation">{place['vicinity'].split(",").pop()}</label>
+														</div>
+													</div>
+												</div>
+												<FontAwesomeIcon className="deleteFavoriteIcon" icon={deleteIcon} onClick={()=>this.removeFavorite(index, item.id)}/>
 											</div>
-											<div class="placeInfo">
-												<label className="favoriteName">{place['name']}</label>
-												<div className="favoriteInfo">
-													<label className="favoriteLocation">{place['vicinity'].split(",").pop()}</label>
+										)
+									}
+								}
+								else if(item.type === "event") {
+									if('eventImg' in item) {
+										if(item.eventImg) {
+											img = "/eventImage?img=" + item.eventImg;
+										}
+									}
+									return (
+										<div class="favorite">
+											<div onClick={() => this.eventModalHandler(
+															item.eventName,
+															img,
+															item.location,
+															item.eventDesc,
+															item.eventStartDate,
+															item.eventStartTime,
+															item.eventEndDate,
+															item.eventEndTime,
+															item.eventId,
+															item.eventLat,
+															item.eventLng
+													)}>
+												<div className="favoriteImg">
+													<img src={img} alt={item.id} />
+												</div>
+												<div class="placeInfo">
+													<label className="favoriteName">{item.eventName}</label>
+													<div className="favoriteInfo">
+														<label className="favoriteLocation">{item.city ? item.city : "Location unknown"}</label>
+													</div>
 												</div>
 											</div>
+											<FontAwesomeIcon className="deleteFavoriteIcon" icon={deleteIcon} onClick={()=>this.removeFavorite(index, item.eventId)}/>
 										</div>
-										<FontAwesomeIcon className="deleteFavoriteIcon" icon={deleteIcon} onClick={()=>this.removeFavorite(index, item.id)}/>
-									</div>
-								)
-							}
-						}
-						else if(item.type === "event") {
-							if('eventImg' in item) {
-								if(item.eventImg) {
-									img = "/eventImage?img=" + item.eventImg;
+									);
 								}
-							}
-							return (
-								<div class="favorite">
-									<div onClick={() => this.eventModalHandler(
-													item.eventName,
-													img,
-													item.location,
-													item.eventDesc,
-													item.eventStartDate,
-													item.eventStartTime,
-													item.eventEndDate,
-													item.eventEndTime,
-													item.eventId,
-													item.eventLat,
-													item.eventLng
-											)}>
-										<div className="favoriteImg">
-											<img src={img} alt={item.id} />
-										</div>
-										<div class="placeInfo">
-											<label className="favoriteName">{item.eventName}</label>
-											<div className="favoriteInfo">
-												<label className="favoriteLocation">{item.city ? item.city : "Location unknown"}</label>
-												{/*<div className="favoriteRating">
-													{Array.apply(0, Array(Math.floor(4))).map(function(x) {
-														return (
-															<FontAwesomeIcon icon={solidStar} />
-														);
-													})}
-													{Array.apply(0, Array(5-Math.floor(4))).map(function(x) {
-														return (
-															<FontAwesomeIcon icon={regularStar} />
-														);
-													})}
-												</div>*/}
-											</div>
-										</div>
-									</div>
-									<FontAwesomeIcon className="deleteFavoriteIcon" icon={deleteIcon} onClick={()=>this.removeFavorite(index, item.id)}/>
-								</div>
-							);
-						}
-					})}
+							})
+						:
+						<div class="profileError">
+							No favorites!
+						</div>
+					}
 				</div>
 				{viewModal}
 			</div>
@@ -519,7 +512,7 @@ class ResultList extends Component {
 	loadData() {
 		if(this.props.loggedIn) {
 			setTimeout(function() {
-				const url = "/api/user/preferences/" + this.props.userId;
+				const url = "/api/user/preferences";
 				axios.get(url)
 					.then(response => {
 						let temp = [];
@@ -580,12 +573,19 @@ class ResultList extends Component {
 						</ul>
 					</div>
 					<div id="preferenceList">
-                        {this.state.preferences.map((preference, index) => {return (
-                            <label className="preference" onClick={() => this.removePreference(index, preference, this.props.object[preference])}>
-                                {preference.split('_').join(' ')}
-                                <FontAwesomeIcon className="closeIcon" icon={xIcon} />
-                            </label>
-                        );})}
+                        {	
+							this.state.preferences && this.state.preferences.length ?
+							this.state.preferences.map((preference, index) => {return (
+								<label className="preference" onClick={() => this.removePreference(index, preference, this.props.object[preference])}>
+									{preference.split('_').join(' ')}
+									<FontAwesomeIcon className="closeIcon" icon={xIcon} />
+								</label>
+							);})
+							:
+							<div class="profileError">
+								Try adding your preferences. It will make TravelBuddy even more fun!
+							</div>
+						}
                     </div>
 				</div>
         )

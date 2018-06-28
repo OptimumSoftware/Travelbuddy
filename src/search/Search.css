@@ -197,7 +197,7 @@ p.prev {
 .search-suggest-select-container {
 	position: absolute;
 	border: 1px solid grey;
-	width:100%;
+	text-align: left;
 }
 
 .search-suggest-select-container:empty {
