@@ -184,3 +184,35 @@ p.prev {
 .allResults .singleResult {
     float: left;
 }
+
+#autoSearch {
+	display: inline-block;
+    width: 50%;
+}
+
+#autoSearchBar {
+	width: 94%;
+}
+
+.search-suggest-select-container {
+	position: absolute;
+	border: 1px solid grey;
+	width:100%;
+}
+
+.search-suggest-select-container:empty {
+	display: none;
+}
+
+.search-suggest-item-active {
+	background: #f8f9fa;
+}
+
+.search-suggest-item-inactive {
+	background: #fff;
+}
+
+#search-suggest-item {
+	padding: 8px 14px 8px 14px;
+    font-size: 16px;
+}
