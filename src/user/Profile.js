@@ -21,24 +21,10 @@ class Profile extends Component {
 		super(props);
 		
 		this.state = {
-			userId: null,
-			loggedIn: false,
 			email: "",
 			country: "",
 			userEvents: []
 		}
-		
-		const url = "/api/loginCheck";	
-		axios.get(url)
-			.then(response => {
-				if(response.data['username']) {
-					const usr = response.data['username'];
-					this.setState({
-						userId: usr,
-						loggedIn: true
-					});
-				}
-			})
 			
 		const grav = "/api/loginName"
         axios.get(grav)
@@ -74,12 +60,12 @@ class Profile extends Component {
 			<main>
 				<div id="profileWrapper">
 					<div id="topRowWrapper">
-						<User userId={this.state.userId} loggedIn={this.state.loggedIn} email={this.state.email} country={this.state.country} />
+						<User email={this.state.email} country={this.state.country} />
 					</div>
-					<Favorites userId={this.state.userId} loggedIn={this.state.loggedIn} />
-					<Preferences userId={this.state.userId} loggedIn={this.state.loggedIn} />
+					<Favorites />
+					<Preferences />
 					<UserEvents events={this.state.userEvents} />
-					<Settings userId={this.state.userId} loggedIn={this.state.loggedIn} />
+					<Settings />
 				</div>
 			</main>
 		);
@@ -87,31 +73,6 @@ class Profile extends Component {
 }
 
 class User extends Component {
-	constructor(props) {
-		super(props)
-		
-		this.state = {
-			userId: "",
-			loggedIn: false,
-			email: ""
-		}
-	}
-	
-	componentDidUpdate() {
-		if(this.state.userId !== this.props.userId && this.state.email !== this.props.email) {
-			this.setState({
-				userId: this.props.userId,
-				loggedIn: this.props.loggedIn,
-				email: this.props.email
-			});
-			this.loadData();
-		}
-	}
-	
-	loadData() {
-		
-	}
-	
 	render() {
 		return (
 			<div id="userFull">
@@ -133,10 +94,6 @@ class User extends Component {
 }
 
 class UserEvents extends Component {
-	constructor(props) {
-		super(props);
-	}
-	
 	render() {
 		return(
 			<div id="userEvents">
@@ -174,8 +131,6 @@ class Favorites extends Component {
 
         this.state = {
 			items: [],
-			userId: "",
-			loggedIn: false,
 			placeDetails: {},
 			check: false,
 			photos: [],
@@ -186,6 +141,8 @@ class Favorites extends Component {
 		this.proxyUrl = "https://cors-anywhere.herokuapp.com/";
 		this.imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxheight=234&maxwidth=280&photoreference=";
 		this.key = "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E";
+		
+		this.loadData();
 	}
 	
 	
@@ -197,44 +154,31 @@ class Favorites extends Component {
             })
         })
     }
-
-	
-	componentDidUpdate() {
-		if(this.state.userId !== this.props.userId) {
-			this.setState({
-				userId: this.props.userId,
-				loggedIn: this.props.loggedIn
-			});
-			this.loadData();
-		}
-	}
 	
 	loadData() {
-		if(this.props.loggedIn) {
-			axios.get(this.url + "?username=" + this.props.userId)
-				.then(response => {
-					this.setState({
-						items: response.data
-					});
-					
+		axios.get(this.url)
+			.then(response => {
+				this.setState({
+					items: response.data
+				});
+				
+			})
+			.then(() => {
+				this.state.items.forEach(favorite => {
+					if(favorite.placeId) {
+						axios.get(this.proxyUrl + this.placeDetailsUrl + favorite.placeId + this.key)
+								.then(response => {
+									var temp1 = this.state.placeDetails;
+									temp1[favorite.placeId] = response.data;
+									this.setState({
+										placeDetails: temp1
+									});
+								})
+					}
 				})
-				.then(() => {
-					this.state.items.forEach(favorite => {
-						if(favorite.placeId) {
-							axios.get(this.proxyUrl + this.placeDetailsUrl + favorite.placeId + this.key)
-									.then(response => {
-										var temp1 = this.state.placeDetails;
-										temp1[favorite.placeId] = response.data;
-										this.setState({
-											placeDetails: temp1
-										});
-									})
-						}
-					})
-					
-				})
-				.then(() => {console.log(this.state.placeDetails)})
-		}
+				
+			})
+			.then(() => {console.log(this.state.placeDetails)})
 	}
 
     removeFavorite(index, id) {
@@ -491,41 +435,26 @@ class ResultList extends Component {
 		
 		this.state = {
 			preferences: [],
-			userId: "",
-			loggedIn: false
 		}
 		
 		this.addPreference = this.addPreference.bind(this);
 		this.removePreference = this.removePreference.bind(this);
-	}
-	
-	componentDidUpdate() {
-		if(this.state.userId !== this.props.userId) {
-			this.setState({
-				userId: this.props.userId,
-				loggedIn: this.props.loggedIn
-			});
-			this.loadData();
-		}
+		this.loadData();
 	}
 	
 	loadData() {
-		if(this.props.loggedIn) {
-			setTimeout(function() {
-				const url = "/api/user/preferences";
-				axios.get(url)
-					.then(response => {
-						let temp = [];
-						for (var key in response.data) {
-							temp.push(key)
-						}
-						this.setState({
-							preferences: temp
-						})
-						
-					}); 
-			}.bind(this), 1000);
-		}
+		const url = "/api/user/preferences";
+		axios.get(url)
+			.then(response => {
+				let temp = [];
+				for (var key in response.data) {
+					temp.push(key)
+				}
+				this.setState({
+					preferences: temp
+				})
+				
+			}); 
 	}
 
     addPreference(i, result) {
@@ -539,27 +468,23 @@ class ResultList extends Component {
 		}
 		pref.push(result)
 		if (check == 0) {
-			if(this.props.loggedIn) {
-				const url = "/api/user/preferences/" + this.props.userId + "/" + i
-				axios.post(url)
-				this.setState({
-					preferences: pref
-				})
-				this.props.emptySearch();
-			}
+			const url = "/api/user/preferences?id=" +  i
+			axios.post(url)
+			this.setState({
+				preferences: pref
+			})
+			this.props.emptySearch();
 		}
 	}
 
     removePreference(index, name, i) {
-		if(this.props.loggedIn) {
-			const url = "/api/user/preferences/" + this.props.userId + "/" + i
-			axios.delete(url)
-			let array = this.state.preferences;
-			array.splice(index, 1);
-			this.setState({
-				preferences: array
-			});
-		}
+		const url = "/api/user/preferences?id=" +  i
+		axios.delete(url)
+		let array = this.state.preferences;
+		array.splice(index, 1);
+		this.setState({
+			preferences: array
+		});
     }
 
     render() {
@@ -604,47 +529,34 @@ class Settings extends Component {
 			email: "",
 			country: "",
 			password: "",
-			userId: "",
-			loggedIn: false,
 			countries: []
 		}
 		
 		this.handleInputChange = this.handleInputChange.bind(this);
-	}
-	
-	componentDidUpdate() {
-		if(this.state.userId !== this.props.userId) {
-			this.setState({
-				userId: this.props.userId,
-				loggedIn: this.props.loggedIn
-			});
-			this.loadData();
-		}
+		this.loadData();
 	}
 	
 	loadData() {
-		if(this.props.loggedIn) {
-			let url = '/api/user/' + this.props.userId;
-			axios.get(url)
-				.then(result => {
-					result = result.data;
-					this.setState({
-						firstName: result.firstName,
-						lastName: result.lastName,
-						username: result.username,
-						email: result.email,
-						country: result.country,
-					});
+		let url = '/api/user';
+		axios.get(url)
+			.then(result => {
+				result = result.data;
+				this.setState({
+					firstName: result.firstName,
+					lastName: result.lastName,
+					username: result.username,
+					email: result.email,
+					country: result.country,
 				});
-			axios.get("/api/countries")
-				.then(response => {
-					this.setState({countries: response.data});
-				})
-		}
+			});
+		axios.get("/api/countries")
+			.then(response => {
+				this.setState({countries: response.data});
+			})
 	}
 	
 	render() {
-		const url = '/api/user/'+this.props.userId;
+		const url = '/api/user';
 		return (
 			<div id="settings">
 			<h2>Account settings</h2>
