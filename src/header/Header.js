@@ -12,6 +12,7 @@ import mainLogo from '../images/logo.svg';
 import axios from "axios/index";
 import Gravatar from 'react-gravatar'
 
+
 class Header extends Component {
     constructor(props) {
         super(props);
