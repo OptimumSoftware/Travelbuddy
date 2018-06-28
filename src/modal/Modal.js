@@ -30,10 +30,14 @@ class Modal extends Component {
     }
 
     render() {
-        let open = "Closed"
-        if (this.props.open) {
-            open = "Open now"
-        }
+		console.log(this.props.open)
+		let open = "No opening hours available";
+		if(this.props.open === false) {
+			open = "Closed"
+		}
+		if (this.props.open === true) {
+			open = "Open now"
+		}
 		
         return(
 
@@ -177,7 +181,7 @@ class Modal extends Component {
 						document.getElementById("voteIcon").style.color = "green";
 					}
 					else {
-						document.getElementById("voteIcon").style.color = "#fff";
+						document.getElementById("voteIcon").style.color = "#000";
 					}
 				});
 		}

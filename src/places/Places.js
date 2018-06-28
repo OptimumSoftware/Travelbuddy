@@ -47,19 +47,28 @@ class Places extends Component {
 
     createContent = () => {
         let content = [];
-        let image;
+        
         for (let index = 0; index < this.state.results.length; index++) {
+			let image;
             if (this.state.results[index].photos == undefined) {
                 image = places;
             } else {
                 image = this.baseUrl + this.state.results[index].photos[0].photo_reference + this.apikey;
             }
+			
+			let opening;
+			if('opening_hours' in this.state.results[index] && 'open_now' in this.state.results[index].opening_hours) {
+				opening = this.state.results[index].opening_hours.open_now;
+			}
+			else {
+				opening = null;
+			}
 
             content.push(<div className={"singleResult"} onClick={() => this.props.handlerssss(
                 this.state.results[index].name,
-                this.baseUrl + this.state.results[index].photos[0].photo_reference + this.apikey,
+                image,
                 this.state.results[index].vicinity,
-                this.state.results[index].opening_hours.open_now,
+                opening,
                 this.state.results[index].geometry.location.lat,
                 this.state.results[index].geometry.location.lng,
                 this.state.results[index].place_id,
@@ -67,7 +76,7 @@ class Places extends Component {
                 <div className={"nameBox"}>
                     <p>{this.state.results[index].name}</p>
                 </div>
-                <div className={"rating"}>{this.state.results[index].rating}</div>
+                <div className={"rating"}>{this.state.results[index].rating ? this.state.results[index].rating : "N/A"}</div>
                 <img src={image} alt={""}/>
             </div>)
         }
