@@ -258,3 +258,18 @@ ul.suggestCategories li {
     margin-top: 12px;
     margin-bottom: 20px;
 }
+
+#messageOk {
+	color: green;
+}
+#messageError {
+	color: red;
+}
+
+.messageGeneral:empty {
+	display: none;
+}
+.messageGeneral {
+	margin-top: 15px;
+	font-weight: bold;
+}

@@ -529,7 +529,9 @@ class Settings extends Component {
 			email: "",
 			country: "",
 			password: "",
-			countries: []
+			countries: [],
+			message: null,
+			messageId: null,
 		}
 		
 		this.handleInputChange = this.handleInputChange.bind(this);
@@ -555,13 +557,43 @@ class Settings extends Component {
 			})
 	}
 	
+	savePreferences() {
+		let url = '/api/user';
+		url += "?firstName=" + this.state.firstName;
+		url += "&lastName=" + this.state.lastName;
+		url += "&username=" + this.state.username;
+		url += "&email=" + this.state.email;
+		url += "&password=" + this.state.password;
+		url += "&country=" + this.state.country;
+		
+		axios.put(url)
+			.then(response => {
+				if(response.data) {
+					this.setState({
+						message: response.data.message,
+						messageId: "messageOk",
+						password: ""
+					});
+					window.setTimeout(() => this.setState({
+						message: null,
+						messageId: null
+					}), 2000);
+				}
+			})
+			.catch(error => {
+				this.setState({
+					message: error.response.data.message,
+					messageId: "messageError",
+				});
+			});
+	}
+	
 	render() {
-		const url = '/api/user';
 		return (
 			<div id="settings">
 			<h2>Account settings</h2>
 			
-			<form action={url} method='POST'>
+			<div>
 				<div className="settingsRow">
 					<div className="settingsBlock">
 						<label>First name</label>
@@ -604,11 +636,11 @@ class Settings extends Component {
 						</select>
 					</div>
 				</div>
-				
 				<div className="settingsBlock">
-					<button type="submit">Save settings</button>
+					<button onClick={() => this.savePreferences()}>Save settings</button>
 				</div>
-			</form>
+				<div className="messageGeneral" id={this.state.messageId}>{this.state.message}</div>
+			</div>
 		</div>
 		);
 	}
