@@ -229,6 +229,9 @@ ul.suggestCategories li {
 #userEvents {
 	margin-top: 30px;
     margin-bottom: 40px;
+}
+
+#userEventList {
 	border-bottom: 1px solid grey;
 }
 
@@ -247,4 +250,26 @@ ul.suggestCategories li {
 	padding: 20px 15px 20px 15px;
     font-size: 19px;
     border-top: 1px solid grey;
+}
+
+.profileError {
+	color: #f57c00;
+    font-weight: 700;
+    margin-top: 12px;
+    margin-bottom: 20px;
+}
+
+#messageOk {
+	color: green;
+}
+#messageError {
+	color: red;
+}
+
+.messageGeneral:empty {
+	display: none;
+}
+.messageGeneral {
+	margin-top: 15px;
+	font-weight: bold;
 }

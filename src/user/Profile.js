@@ -21,24 +21,10 @@ class Profile extends Component {
 		super(props);
 		
 		this.state = {
-			userId: null,
-			loggedIn: false,
 			email: "",
 			country: "",
 			userEvents: []
 		}
-		
-		const url = "/api/loginCheck";	
-		axios.get(url)
-			.then(response => {
-				if(response.data['username']) {
-					const usr = response.data['username'];
-					this.setState({
-						userId: usr,
-						loggedIn: true
-					});
-				}
-			})
 			
 		const grav = "/api/loginName"
         axios.get(grav)
@@ -74,12 +60,12 @@ class Profile extends Component {
 			<main>
 				<div id="profileWrapper">
 					<div id="topRowWrapper">
-						<User userId={this.state.userId} loggedIn={this.state.loggedIn} email={this.state.email} country={this.state.country} />
+						<User email={this.state.email} country={this.state.country} />
 					</div>
-					<Favorites userId={this.state.userId} loggedIn={this.state.loggedIn} />
-					<Preferences userId={this.state.userId} loggedIn={this.state.loggedIn} />
+					<Favorites />
+					<Preferences />
 					<UserEvents events={this.state.userEvents} />
-					<Settings userId={this.state.userId} loggedIn={this.state.loggedIn} />
+					<Settings />
 				</div>
 			</main>
 		);
@@ -87,31 +73,6 @@ class Profile extends Component {
 }
 
 class User extends Component {
-	constructor(props) {
-		super(props)
-		
-		this.state = {
-			userId: "",
-			loggedIn: false,
-			email: ""
-		}
-	}
-	
-	componentDidUpdate() {
-		if(this.state.userId !== this.props.userId && this.state.email !== this.props.email) {
-			this.setState({
-				userId: this.props.userId,
-				loggedIn: this.props.loggedIn,
-				email: this.props.email
-			});
-			this.loadData();
-		}
-	}
-	
-	loadData() {
-		
-	}
-	
 	render() {
 		return (
 			<div id="userFull">
@@ -133,27 +94,31 @@ class User extends Component {
 }
 
 class UserEvents extends Component {
-	constructor(props) {
-		super(props);
-	}
-	
 	render() {
 		return(
 			<div id="userEvents">
 				<h2>Your events</h2>
-				<div id="userEventList">
-					{this.props.events.map(event => {
-						const url = "/editEvent?id=" + event.id
-						return (
-							<a href={url}>
-								<div id="userEvent">
-									<FontAwesomeIcon icon={editIcon} id="editIcon"/>
-									 <label id="userEventName">{event.name}</label>
-								</div>
-							</a>
+					{
+						this.props.events && this.props.events.length ? (
+							<div id="userEventList">
+								{this.props.events.map(event => {
+									const url = "/editEvent?id=" + event.id
+									return (
+										<a href={url}>
+											<div id="userEvent">
+												<FontAwesomeIcon icon={editIcon} id="editIcon"/>
+												 <label id="userEventName">{event.name}</label>
+											</div>
+										</a>
+									)
+								})}
+							</div>
 						)
-					})}
-				</div>
+						:
+						<div class="profileError">
+							No favorites!
+						</div>
+					}
 			</div>
 		)
 	}
@@ -165,19 +130,7 @@ class Favorites extends Component {
 		super(props)
 
         this.state = {
-            favorites: [
-                {name: "Cantina Mexicana",
-                    image: logo1,
-                    location: "Groningen",
-                    rating: 4},
-                {name: "Groninger Museum",
-                    image: logo2,
-                    location: "Groningen",
-                    rating: 5},
-            ],
 			items: [],
-			userId: "",
-			loggedIn: false,
 			placeDetails: {},
 			check: false,
 			photos: [],
@@ -188,6 +141,8 @@ class Favorites extends Component {
 		this.proxyUrl = "https://cors-anywhere.herokuapp.com/";
 		this.imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxheight=234&maxwidth=280&photoreference=";
 		this.key = "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E";
+		
+		this.loadData();
 	}
 	
 	
@@ -199,44 +154,31 @@ class Favorites extends Component {
             })
         })
     }
-
-	
-	componentDidUpdate() {
-		if(this.state.userId !== this.props.userId) {
-			this.setState({
-				userId: this.props.userId,
-				loggedIn: this.props.loggedIn
-			});
-			this.loadData();
-		}
-	}
 	
 	loadData() {
-		if(this.props.loggedIn) {
-			axios.get(this.url + "?username=" + this.props.userId)
-				.then(response => {
-					this.setState({
-						items: response.data
-					});
-					
+		axios.get(this.url)
+			.then(response => {
+				this.setState({
+					items: response.data
+				});
+				
+			})
+			.then(() => {
+				this.state.items.forEach(favorite => {
+					if(favorite.placeId) {
+						axios.get(this.proxyUrl + this.placeDetailsUrl + favorite.placeId + this.key)
+								.then(response => {
+									var temp1 = this.state.placeDetails;
+									temp1[favorite.placeId] = response.data;
+									this.setState({
+										placeDetails: temp1
+									});
+								})
+					}
 				})
-				.then(() => {
-					this.state.items.forEach(favorite => {
-						if(favorite.placeId) {
-							axios.get(this.proxyUrl + this.placeDetailsUrl + favorite.placeId + this.key)
-									.then(response => {
-										var temp1 = this.state.placeDetails;
-										temp1[favorite.placeId] = response.data;
-										this.setState({
-											placeDetails: temp1
-										});
-									})
-						}
-					})
-					
-				})
-				.then(() => {console.log(this.state.placeDetails)})
-		}
+				
+			})
+			.then(() => {console.log(this.state.placeDetails)})
 	}
 
     removeFavorite(index, id) {
@@ -323,89 +265,84 @@ class Favorites extends Component {
 			<div id="favorites">
 				<h2>Your favorite places</h2>
 				<div id="favoritesWrapper">
-					{this.state.items.map((item, index) => {
-						let img = place
-						if(item.type === "place") {						
-							if(item.placeId in this.state.placeDetails) {
-								const place = this.state.placeDetails[item.placeId]['result'];
-								if('photos' in place) {
-									img = this.imgUrl+place['photos'][0]['photo_reference']+this.key;
-								}
+					{
+						this.state.items && this.state.items.length ?
+							this.state.items.map((item, index) => {
+								let img = place
+								if(item.type === "place") {						
+									if(item.placeId in this.state.placeDetails) {
+										const place = this.state.placeDetails[item.placeId]['result'];
+										if('photos' in place) {
+											img = this.imgUrl+place['photos'][0]['photo_reference']+this.key;
+										}
 
-								return (
-									<div class="favorite">
-										<div onClick={() => this.modalHandler(
-													place.name,
-													img,
-													place.vicinity,
-													place.opening_hours.open_now, 
-													place.geometry.location.lat,
-													place.geometry.location.lng,
-													place.place_id
-											)}>
-											<div className="favoriteImg">
-												<img src={img} alt={item.id} />
+										return (
+											<div class="favorite">
+												<div onClick={() => this.modalHandler(
+															place.name,
+															img,
+															place.vicinity,
+															place.opening_hours.open_now, 
+															place.geometry.location.lat,
+															place.geometry.location.lng,
+															place.place_id
+													)}>
+													<div className="favoriteImg">
+														<img src={img} alt={item.id} />
+													</div>
+													<div class="placeInfo">
+														<label className="favoriteName">{place['name']}</label>
+														<div className="favoriteInfo">
+															<label className="favoriteLocation">{place['vicinity'].split(",").pop()}</label>
+														</div>
+													</div>
+												</div>
+												<FontAwesomeIcon className="deleteFavoriteIcon" icon={deleteIcon} onClick={()=>this.removeFavorite(index, item.id)}/>
 											</div>
-											<div class="placeInfo">
-												<label className="favoriteName">{place['name']}</label>
-												<div className="favoriteInfo">
-													<label className="favoriteLocation">{place['vicinity'].split(",").pop()}</label>
+										)
+									}
+								}
+								else if(item.type === "event") {
+									if('eventImg' in item) {
+										if(item.eventImg) {
+											img = "/eventImage?img=" + item.eventImg;
+										}
+									}
+									return (
+										<div class="favorite">
+											<div onClick={() => this.eventModalHandler(
+															item.eventName,
+															img,
+															item.location,
+															item.eventDesc,
+															item.eventStartDate,
+															item.eventStartTime,
+															item.eventEndDate,
+															item.eventEndTime,
+															item.eventId,
+															item.eventLat,
+															item.eventLng
+													)}>
+												<div className="favoriteImg">
+													<img src={img} alt={item.id} />
+												</div>
+												<div class="placeInfo">
+													<label className="favoriteName">{item.eventName}</label>
+													<div className="favoriteInfo">
+														<label className="favoriteLocation">{item.city ? item.city : "Location unknown"}</label>
+													</div>
 												</div>
 											</div>
+											<FontAwesomeIcon className="deleteFavoriteIcon" icon={deleteIcon} onClick={()=>this.removeFavorite(index, item.eventId)}/>
 										</div>
-										<FontAwesomeIcon className="deleteFavoriteIcon" icon={deleteIcon} onClick={()=>this.removeFavorite(index, item.id)}/>
-									</div>
-								)
-							}
-						}
-						else if(item.type === "event") {
-							if('eventImg' in item) {
-								if(item.eventImg) {
-									img = "/eventImage?img=" + item.eventImg;
+									);
 								}
-							}
-							return (
-								<div class="favorite">
-									<div onClick={() => this.eventModalHandler(
-													item.eventName,
-													img,
-													item.location,
-													item.eventDesc,
-													item.eventStartDate,
-													item.eventStartTime,
-													item.eventEndDate,
-													item.eventEndTime,
-													item.eventId,
-													item.eventLat,
-													item.eventLng
-											)}>
-										<div className="favoriteImg">
-											<img src={img} alt={item.id} />
-										</div>
-										<div class="placeInfo">
-											<label className="favoriteName">{item.eventName}</label>
-											<div className="favoriteInfo">
-												<label className="favoriteLocation">{item.city ? item.city : "Location unknown"}</label>
-												{/*<div className="favoriteRating">
-													{Array.apply(0, Array(Math.floor(4))).map(function(x) {
-														return (
-															<FontAwesomeIcon icon={solidStar} />
-														);
-													})}
-													{Array.apply(0, Array(5-Math.floor(4))).map(function(x) {
-														return (
-															<FontAwesomeIcon icon={regularStar} />
-														);
-													})}
-												</div>*/}
-											</div>
-										</div>
-									</div>
-									<FontAwesomeIcon className="deleteFavoriteIcon" icon={deleteIcon} onClick={()=>this.removeFavorite(index, item.id)}/>
-								</div>
-							);
-						}
-					})}
+							})
+						:
+						<div class="profileError">
+							No favorites!
+						</div>
+					}
 				</div>
 				{viewModal}
 			</div>
@@ -498,41 +435,26 @@ class ResultList extends Component {
 		
 		this.state = {
 			preferences: [],
-			userId: "",
-			loggedIn: false
 		}
 		
 		this.addPreference = this.addPreference.bind(this);
 		this.removePreference = this.removePreference.bind(this);
-	}
-	
-	componentDidUpdate() {
-		if(this.state.userId !== this.props.userId) {
-			this.setState({
-				userId: this.props.userId,
-				loggedIn: this.props.loggedIn
-			});
-			this.loadData();
-		}
+		this.loadData();
 	}
 	
 	loadData() {
-		if(this.props.loggedIn) {
-			setTimeout(function() {
-				const url = "/api/user/preferences/" + this.props.userId;
-				axios.get(url)
-					.then(response => {
-						let temp = [];
-						for (var key in response.data) {
-							temp.push(key)
-						}
-						this.setState({
-							preferences: temp
-						})
-						
-					}); 
-			}.bind(this), 1000);
-		}
+		const url = "/api/user/preferences";
+		axios.get(url)
+			.then(response => {
+				let temp = [];
+				for (var key in response.data) {
+					temp.push(key)
+				}
+				this.setState({
+					preferences: temp
+				})
+				
+			}); 
 	}
 
     addPreference(i, result) {
@@ -546,27 +468,23 @@ class ResultList extends Component {
 		}
 		pref.push(result)
 		if (check == 0) {
-			if(this.props.loggedIn) {
-				const url = "/api/user/preferences/" + this.props.userId + "/" + i
-				axios.post(url)
-				this.setState({
-					preferences: pref
-				})
-				this.props.emptySearch();
-			}
+			const url = "/api/user/preferences?id=" +  i
+			axios.post(url)
+			this.setState({
+				preferences: pref
+			})
+			this.props.emptySearch();
 		}
 	}
 
     removePreference(index, name, i) {
-		if(this.props.loggedIn) {
-			const url = "/api/user/preferences/" + this.props.userId + "/" + i
-			axios.delete(url)
-			let array = this.state.preferences;
-			array.splice(index, 1);
-			this.setState({
-				preferences: array
-			});
-		}
+		const url = "/api/user/preferences?id=" +  i
+		axios.delete(url)
+		let array = this.state.preferences;
+		array.splice(index, 1);
+		this.setState({
+			preferences: array
+		});
     }
 
     render() {
@@ -580,12 +498,19 @@ class ResultList extends Component {
 						</ul>
 					</div>
 					<div id="preferenceList">
-                        {this.state.preferences.map((preference, index) => {return (
-                            <label className="preference" onClick={() => this.removePreference(index, preference, this.props.object[preference])}>
-                                {preference.split('_').join(' ')}
-                                <FontAwesomeIcon className="closeIcon" icon={xIcon} />
-                            </label>
-                        );})}
+                        {	
+							this.state.preferences && this.state.preferences.length ?
+							this.state.preferences.map((preference, index) => {return (
+								<label className="preference" onClick={() => this.removePreference(index, preference, this.props.object[preference])}>
+									{preference.split('_').join(' ')}
+									<FontAwesomeIcon className="closeIcon" icon={xIcon} />
+								</label>
+							);})
+							:
+							<div class="profileError">
+								Try adding your preferences. It will make TravelBuddy even more fun!
+							</div>
+						}
                     </div>
 				</div>
         )
@@ -604,52 +529,71 @@ class Settings extends Component {
 			email: "",
 			country: "",
 			password: "",
-			userId: "",
-			loggedIn: false,
-			countries: []
+			countries: [],
+			message: null,
+			messageId: null,
 		}
 		
 		this.handleInputChange = this.handleInputChange.bind(this);
-	}
-	
-	componentDidUpdate() {
-		if(this.state.userId !== this.props.userId) {
-			this.setState({
-				userId: this.props.userId,
-				loggedIn: this.props.loggedIn
-			});
-			this.loadData();
-		}
+		this.loadData();
 	}
 	
 	loadData() {
-		if(this.props.loggedIn) {
-			let url = '/api/user/' + this.props.userId;
-			axios.get(url)
-				.then(result => {
-					result = result.data;
-					this.setState({
-						firstName: result.firstName,
-						lastName: result.lastName,
-						username: result.username,
-						email: result.email,
-						country: result.country,
-					});
+		let url = '/api/user';
+		axios.get(url)
+			.then(result => {
+				result = result.data;
+				this.setState({
+					firstName: result.firstName,
+					lastName: result.lastName,
+					username: result.username,
+					email: result.email,
+					country: result.country,
 				});
-			axios.get("/api/countries")
-				.then(response => {
-					this.setState({countries: response.data});
-				})
-		}
+			});
+		axios.get("/api/countries")
+			.then(response => {
+				this.setState({countries: response.data});
+			})
+	}
+	
+	savePreferences() {
+		let url = '/api/user';
+		url += "?firstName=" + this.state.firstName;
+		url += "&lastName=" + this.state.lastName;
+		url += "&username=" + this.state.username;
+		url += "&email=" + this.state.email;
+		url += "&password=" + this.state.password;
+		url += "&country=" + this.state.country;
+		
+		axios.put(url)
+			.then(response => {
+				if(response.data) {
+					this.setState({
+						message: response.data.message,
+						messageId: "messageOk",
+						password: ""
+					});
+					window.setTimeout(() => this.setState({
+						message: null,
+						messageId: null
+					}), 2000);
+				}
+			})
+			.catch(error => {
+				this.setState({
+					message: error.response.data.message,
+					messageId: "messageError",
+				});
+			});
 	}
 	
 	render() {
-		const url = '/api/user/'+this.props.userId;
 		return (
 			<div id="settings">
 			<h2>Account settings</h2>
 			
-			<form action={url} method='POST'>
+			<div>
 				<div className="settingsRow">
 					<div className="settingsBlock">
 						<label>First name</label>
@@ -692,11 +636,11 @@ class Settings extends Component {
 						</select>
 					</div>
 				</div>
-				
 				<div className="settingsBlock">
-					<button type="submit">Save settings</button>
+					<button onClick={() => this.savePreferences()}>Save settings</button>
 				</div>
-			</form>
+				<div className="messageGeneral" id={this.state.messageId}>{this.state.message}</div>
+			</div>
 		</div>
 		);
 	}
