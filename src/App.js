@@ -381,13 +381,16 @@ class Home extends Component {
                       calling_code={this.state.calling_code} region_name={this.state.region_name}
                       country_name={this.state.country_name}/>
 
+                <div id={'mainFilter'}>
                 <div id={'filter'} onClick={this.handleClick}>
                     <FontAwesomeIcon icon={faFilter} />
                 </div>
 
 
                 <ToggleDisplay show={this.state.show}>
+
                     <div id={'filterMenu'}>
+
                         <p className={'filterMenuItems'}>Range</p>
                         <p className={'filterMenuItems'}><input type="radio" name="range"  value="5000" onChange={this.radiusHandler} />5 km</p>
                         <p className={'filterMenuItems'}><input type="radio" name="range"  value="10000" onChange={this.radiusHandler} />10 km</p>
@@ -396,6 +399,7 @@ class Home extends Component {
                         <p className={'filterMenuItems'}><input type="radio" name="range"  value="25000" onChange={this.radiusHandler} />25 km</p>
                     </div>
                 </ToggleDisplay>
+                </div>
 
                 {viewModal}
                 {textcategories}

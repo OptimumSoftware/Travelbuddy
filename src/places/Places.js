@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Places.css';
-import places from '../images/placeholder.png';
+import places from '../images/placeholder.gif';
 
 class Places extends Component {
     constructor(props) {

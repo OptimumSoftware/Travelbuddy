@@ -322,7 +322,7 @@ class Favorites extends Component {
                 currentLng = {this.state.currentLng}
             />
 		}
-		let place = require("../images/placeholder-favorite.png")
+		let place = require("../images/placeholder.gif")
 		return (
 			<div id="favorites">
 				<h2>Your favorite places</h2>
@@ -593,6 +593,94 @@ class ResultList extends Component {
                     </div>
 				</div>
         )
+    }
+}
+
+class FriendsOverview extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            name: '',
+            jsonCategories: {},
+            userList: [],
+            results: [],
+            searchBar: "failed",
+            status: []
+        }
+
+
+        axios.get('/api/userList')
+            .then(result => {
+                let temp = [];
+                console.log(temp)
+                this.setState({
+                    jsonCategories: result.data.users
+                })
+
+                {this.state.jsonCategories.map((values) => {
+                    temp.push(values[0])
+                })}
+
+                this.setState({
+                    userList: temp
+                })
+                console.log("de userlist" + this.state.userList)
+            });
+
+
+    }
+
+
+
+    namechangedhandler = (event) => {
+        this.setState(
+            {name: event.target.value}
+        )
+
+    }
+
+    deleteFriend = (event) => {
+        const url = '/api/user/friends/' + this.state.name;
+        axios.delete(url).then((result) => {
+            this.setState({
+                status: result.data.deleteStatus,
+                name: ''
+            })
+            console.log("resultaat van delete " + this.state.status)
+        })
+    }
+
+    addFriend = (event) => {
+        const url = '/api/user/friends?friend=' + this.state.name;
+        axios.post(url).then((result) => {
+            this.setState({
+                status: result.data.addfriend,
+                name: ''
+            })
+            console.log("vriend toevoegen " + this.state.status)
+        })
+    }
+
+    render() {
+        const url = '/api/user/friends';
+        return (
+            <div className={'friends'}>
+                <h2 id={'friendsTag'}>Friends</h2>
+                <h4 id={'friendH4'}>Add a friend</h4>
+                <h5 id='error' style={{display: this.state.status ? 'none' : 'block'}}>Something went wrong, please check if you used the correct username</h5>
+                <div className={'friendsContent'}>
+                    <div id={'friendForm'}>
+                        <input id="addFriends" type="text" value={this.state.name} onChange={this.namechangedhandler} name="friend"  placeholder={'Username'}  />
+                        <button id={'addButton'} onClick={() => this.addFriend()}  ><FontAwesomeIcon id={'plusIcon'}  icon={plusSquare}/></button>
+                    </div>
+                    <button id={'deleteButton'} onClick={() => this.deleteFriend()}><FontAwesomeIcon id={'minusIcon'} icon={minusSquare}/></button>
+                    <Link id={'friendLink'} to="/friends" >See friends</Link>
+                </div>
+            </div>
+
+        );
+
     }
 }
 
