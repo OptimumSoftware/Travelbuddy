@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import './Modal.css';
+import './EventModal.css';
 import Map from '../map/Map';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import heartIcon from '@fortawesome/fontawesome-free-solid/faHeart';
 import thumbsIcon from '@fortawesome/fontawesome-free-solid/faThumbsUp';
 import axios from 'axios';
 
-class Modal extends Component {
+class EventModal extends Component {
 
     constructor(props) {
         super(props);
@@ -30,46 +30,43 @@ class Modal extends Component {
     }
 
     render() {
-        let open = "Closed"
-        if (this.props.open) {
-            open = "Open now"
-        }
-		
         return(
-
             <div id="myModal" className="modal">
+				{console.log("test")}
                 {console.log("Modal image: " + this.props.image)}
                 {console.log("Modal address: " + this.props.address)}
                 <div className="modal-content">
-                    <span id={'close'} onClick={this.props.click} className="close">&times;</span>
-                    <div className={'left'}>
-                        <img className={'modalImage'} src={this.props.image} onClick={this.props.click} alt="gfd" />
-                        <div className={'textLocation'}>
-                            <p id={'nameLocation'}>{this.props.name}</p>
-                            <p>{this.props.address}</p>
-                            <p>{open}</p>
-							<div className="statsLocation">
-								<div className="voteLocation" onClick={this.vote}>
-									<FontAwesomeIcon icon={thumbsIcon} id="voteIcon" /> {this.state.voteCount}
-								</div>
-								<div className="favLocation" onClick={this.favoriteHandler}>
-									<FontAwesomeIcon icon={heartIcon} id="heartIcon" /> {this.state.favoriteText}
+					<span id={'close'} onClick={this.props.click} className="close">&times;</span>
+					<div id="topWrapper">
+						<div className={'left'}>
+							<img className={'modalImage'} src={this.props.image} onClick={this.props.click} alt="gfd" />
+						</div>
+						<div id={'right'}>
+							<div className={'textLocation'}>
+								<p id={'nameLocation'}>{this.props.name}</p>
+								<p id='eventDesc'>{this.props.description}</p>
+								<p>Start: {this.props.startDate} - {this.props.startTime}</p>
+								<p>End: {this.props.endDate} - {this.props.endTime}</p>
+								<div className="statsLocation">
+									<div className="voteLocation" onClick={this.vote}>
+										<FontAwesomeIcon icon={thumbsIcon} id="voteIcon" /> {this.state.voteCount}
+									</div>
+									<div className="favLocation" onClick={this.favoriteHandler}>
+										<FontAwesomeIcon icon={heartIcon} id="heartIcon" /> {this.state.favoriteText}
+									</div>
 								</div>
 							</div>
-                        </div>
-
-
-                    </div>
-                    <div id={'right'}>
-                        <Map
-                            lat = {this.props.lat}
-                            lng = {this.props.lng}
-                            currLat = {this.props.currentLat}
-                            currLng = {this.props.currentLng}
-                        />
-                    </div>
-
-
+						</div>
+					</div>
+					<div id="mapContainer">
+						<p id="eventAddress">{this.props.address}</p>
+						{<Map
+							lat = {this.props.lat}
+							lng = {this.props.lng}
+							currLat = {this.props.currentLat}
+							currLng = {this.props.currentLng}
+						/>}
+					</div>
                 </div>
 
             </div>
@@ -121,7 +118,7 @@ class Modal extends Component {
 				})
 			}
 			else {
-				const url = "/api/user/favorite" + "?username=" + this.state.userId + "&placeId=" + this.props.id + "&type=place";
+				const url = "/api/user/favorite" + "?username=" + this.state.userId + "&eventId=" + this.props.id + "&type=event";
 				axios.post(url)
 				document.getElementById("heartIcon").style.color = "red";
 				this.setState({
@@ -177,7 +174,7 @@ class Modal extends Component {
 						document.getElementById("voteIcon").style.color = "green";
 					}
 					else {
-						document.getElementById("voteIcon").style.color = "#fff";
+						document.getElementById("voteIcon").style.color = "#000";
 					}
 				});
 		}
@@ -200,4 +197,4 @@ class Modal extends Component {
 	}
 }
 
-export default Modal;
+export default EventModal;

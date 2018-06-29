@@ -11,8 +11,10 @@ import Profile from './user/Profile';
 import AddEvent from './user/AddEvent';
 import EditEvent from './user/EditEvent';
 import Places from './places/Places';
+import Events from './places/Events';
 import City   from './city/City';
 import Modal   from './modal/Modal';
+import EventModal from './modal/EventModal';
 import Map   from './map/Map';
 import Search   from './search/Search.js';
 import Friends from './friends/Friends.js';
@@ -57,70 +59,72 @@ class App extends Component {
 }
 
 class Home extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            region_name: ' ',
-            counter: 0,
-            zoom: 1,
-            text: ' ',
-            city: '',
-            continent_name: ' ',
-            latitude: ' ',
-            longitude: ' ',
-            wikitext: ' ',
-            calling_code: ' ',
-            gpsCity: '',
-            country_name: ' ',
-            lat: null,
-            lon: null,
-            name: ' ',
-            categories: [],
-            id: "hier moet unieke waarde komen",
-            show: false,
-            photos: [logo1,logo2,logo3,logo4],
-            query: "",
-            range: "5000",
-            userId: "",
-            loggedIn: false
-        };
-
-        const url = "/api/loginCheck";
-        axios.get(url)
-            .then(response => {
-                if(response.data['username']) {
-                    const usr = response.data['username'];
-                    this.setState({
-                        loggedIn: true,
-                        userId: usr
-                    });
-                }
-            })
-            .then(() => {
-                if(this.state.loggedIn) {
-                    console.log(this.state.userId)
-                    const url = "/api/user/preferences/" + this.state.userId;
-                    axios.get(url)
-                        .then(response => {
-                            let temp = [];
-                            for (var key in response.data) {
-                                temp.push(key)
-                            }
-                            this.setState({
-                                categories: temp
-                            })
-                            console.log(this.state.categories)
-                        });
-                }
-                else {
-                    this.setState({
-                        categories: ['restaurant', 'bar', 'car_dealer', 'hotel']
-                    });
-                }
-            })
-
-
+	constructor(props) {
+		super(props);
+		
+		this.state = {
+			region_name: ' ',
+			counter: 0,
+			zoom: 1,
+			text: ' ',
+			city: '',
+			continent_name: ' ',
+			latitude: ' ',
+			longitude: ' ',
+			wikitext: ' ',
+			calling_code: ' ',
+			gpsCity: '',
+			country_name: ' ',
+			lat: null,
+			lon: null,
+			name: ' ',
+			categories: [],
+			id: "hier moet unieke waarde komen",
+			show: false,
+			photos: [logo1,logo2,logo3,logo4],
+			query: "",
+			range: "5000",
+			userId: "",
+			loggedIn: false,
+			events: [],
+			eventPlace: null
+		};
+		
+		const url = "/api/loginCheck";
+		axios.get(url)
+			.then(response => {
+				if(response.data['username']) {
+					const usr = response.data['username'];
+					this.setState({
+						loggedIn: true,
+						userId: usr
+					});
+				}
+			})
+			.then(() => {
+				if(this.state.loggedIn) {
+					console.log(this.state.userId)
+					const url = "/api/user/preferences/" + this.state.userId;
+					axios.get(url)
+						.then(response => {
+							let temp = [];
+							for (var key in response.data) {
+								temp.push(key)
+							}
+							this.setState({
+								categories: temp
+							})
+							console.log(this.state.categories)
+						});
+				}
+				else {
+					this.setState({
+						categories: ['restaurant', 'bar', 'car_dealer', 'hotel']
+					});
+				}
+			})		
+	
+        
 
         navigator.geolocation.getCurrentPosition((position) => {
             this.setState({
@@ -132,7 +136,7 @@ class Home extends Component {
             console.log(this.state.lon)
         })
 
-        var proxy  = 'https://cors-anywhere.herokuapp.com/';
+		var proxy  = 'https://cors-anywhere.herokuapp.com/';
         axios.get('http://api.ipstack.com/check?access_key=201a9fbb71fcb2b3195f6626795b5907')
             .then(response => {
                 this.setState({ continent_name: response.data.continent_name,
@@ -154,7 +158,7 @@ class Home extends Component {
 
                 console.log(response.data);
                 console.log(`Latitude ${this.state.latitude}, Longitude: ${this.state.longitude} `);
-                let places = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='
+                let places = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?language=EN&location='
                     + this.state.latitude + ',' + this.state.longitude;
                 this.setState({query: places})
                 var url = 'https://en.wikipedia.org//w/api.php?action=opensearch&format=json&search=' + this.state.city;
@@ -165,7 +169,7 @@ class Home extends Component {
                         //console.log(wiki.data)
                     });
 
-                var locationURL  =  'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this.state.latitude + ',' + this.state.longitude + '&key=AIzaSyCRNHsASJT7nxChb3zBLeH2hGJdZGMIZGQ'
+                var locationURL  =  'https://maps.googleapis.com/maps/api/geocode/json?language=EN&latlng=' + this.state.latitude + ',' + this.state.longitude + '&key=AIzaSyCRNHsASJT7nxChb3zBLeH2hGJdZGMIZGQ'
                 axios.get(locationURL)
                     .then(location => {
                         this.setState({gpsCity: location.data.results[0].address_components[3].long_name});
@@ -174,7 +178,7 @@ class Home extends Component {
                             this.setState({
                                 city: this.state.gpsCity
                             })
-                            var url = 'https://en.wikipedia.org//w/api.php?action=opensearch&format=json&search=' + this.state.city;
+                            var url = 'https://en.wikipedia.org//w/api.php?action=opensearch&format=json&language=EN&search=' + this.state.city;
                             axios.get(proxy + url)
                                 .then(wiki => {
                                     this.setState({text: wiki.data});
@@ -187,16 +191,31 @@ class Home extends Component {
                     });
 
 
-            });
-    }
+            })
+			.then(() => {
+				axios.get("/api/getEvents?city=" + this.state.city + "&country=" + this.state.country_name)
+					.then(resp => {
+						resp = resp.data
+						if(resp) {
+							this.setState({
+								eventPlace: resp[0]
+							});
+							resp = resp.slice(1);
+						}
+						this.setState({
+							events: resp
+						});
+					});
+			});
+	}
 
 
     componentDidMount(){
 
-
+		
     }
-
-
+	
+	
     handleClick = () => {
         this.setState({
             show: !this.state.show
@@ -217,9 +236,26 @@ class Home extends Component {
         })
     }
 
+	eventModalHandler = (name, image, address, description, startDate, startTime, endDate, endTime, id, lat, lng) => {
+		this.setState({
+			showEventModal: true,
+			modalName: name,
+            modalImage: image,
+            modalAddress: address,
+            modalDesc: description,
+			modalStartDate: startDate,
+			modalStartTime: startTime,
+			modalEndDate: endDate,
+			modalEndTime: endTime,
+            modalId: id,
+			modalLat: lat,
+			modalLng: lng
+		})
+	}
+
 
     hideModal = () => {
-        this.setState({showModal: false})
+        this.setState({showModal: false, showEventModal: false})
     };
 
     radiusHandler = (e) => {
@@ -265,6 +301,14 @@ class Home extends Component {
         );
 
 
+		let events = null;
+		if(this.state.events && this.state.events.length) {
+			events = (
+				<div>
+					<Events events={this.state.events} handler={this.eventModalHandler} place={this.state.eventPlace}/>
+				</div>
+			);
+		}
 
 
         <Map
@@ -303,40 +347,61 @@ class Home extends Component {
                 currentLng = {this.state.longitude}
             />
         }
-
+		else if(this.state.showEventModal) {
+			viewModal = <EventModal
+                click={this.hideModal}
+                image = {this.state.modalImage}
+                name = {this.state.modalName}
+                address={this.state.modalAddress}
+                photo = {this.state.modalImage}
+                id = {this.state.modalId}
+				lat = {this.state.modalLat}
+                lng = {this.state.modalLng}
+                description = {this.state.modalDesc}
+				startDate = {this.state.modalStartDate}
+				startTime = {this.state.modalStartTime}
+				endDate = {this.state.modalEndDate}
+				endTime = {this.state.modalEndTime}
+				latitude = {this.state.latitude}
+                longitude = {this.state.longitude}
+                currentLat = {this.state.latitude}
+                currentLng = {this.state.longitude}
+            />
+		}
 
 
 
         return (
             <div>
                 <div id={'mainBackground'}></div>
-                <main>
+            <main>
 
-                    <City city={this.state.city} wikitext={this.state.wikitext} name={this.state.name}
-                          continent_name={this.state.continent_name} country_flag={this.state.country_flag}
-                          calling_code={this.state.calling_code} region_name={this.state.region_name}
-                          country_name={this.state.country_name}/>
+                <City city={this.state.city} wikitext={this.state.wikitext} name={this.state.name}
+                      continent_name={this.state.continent_name} country_flag={this.state.country_flag}
+                      calling_code={this.state.calling_code} region_name={this.state.region_name}
+                      country_name={this.state.country_name}/>
 
-                    <div id={'filter'} onClick={this.handleClick}>
-                        <FontAwesomeIcon icon={faFilter} />
+                <div id={'filter'} onClick={this.handleClick}>
+                    <FontAwesomeIcon icon={faFilter} />
+                </div>
+
+
+                <ToggleDisplay show={this.state.show}>
+                    <div id={'filterMenu'}>
+                        <p className={'filterMenuItems'}>Range</p>
+                        <p className={'filterMenuItems'}><input type="radio" name="range"  value="5000" onChange={this.radiusHandler} />5 km</p>
+                        <p className={'filterMenuItems'}><input type="radio" name="range"  value="10000" onChange={this.radiusHandler} />10 km</p>
+                        <p className={'filterMenuItems'}><input type="radio" name="range"  value="15000" onChange={this.radiusHandler} />15 km</p>
+                        <p className={'filterMenuItems'}><input type="radio" name="range"  value="20000" onChange={this.radiusHandler} />20 km</p>
+                        <p className={'filterMenuItems'}><input type="radio" name="range"  value="25000" onChange={this.radiusHandler} />25 km</p>
                     </div>
+                </ToggleDisplay>
 
+                {viewModal}
+                {textcategories}
+				{events}
 
-                    <ToggleDisplay show={this.state.show}>
-                        <div id={'filterMenu'}>
-                            <p className={'filterMenuItems'}>Range</p>
-                            <p className={'filterMenuItems'}><input type="radio" name="range"  value="5000" onChange={this.radiusHandler} />5 km</p>
-                            <p className={'filterMenuItems'}><input type="radio" name="range"  value="10000" onChange={this.radiusHandler} />10 km</p>
-                            <p className={'filterMenuItems'}><input type="radio" name="range"  value="15000" onChange={this.radiusHandler} />15 km</p>
-                            <p className={'filterMenuItems'}><input type="radio" name="range"  value="20000" onChange={this.radiusHandler} />20 km</p>
-                            <p className={'filterMenuItems'}><input type="radio" name="range"  value="25000" onChange={this.radiusHandler} />25 km</p>
-                        </div>
-                    </ToggleDisplay>
-
-                    {viewModal}
-                    {textcategories}
-
-                </main>
+            </main>
             </div>
         );
     }

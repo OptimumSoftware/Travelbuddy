@@ -73,3 +73,25 @@
 	display: inline-block;
 	margin-top: 5px;
 }
+
+.select-place-container {
+	position: absolute;
+	border: 1px solid grey;
+}
+
+.select-place-container:empty {
+   display: none;
+}
+
+.place-item-inactive {
+	background: #fff;
+}
+
+.place-item-active {
+	background: #f8f9fa;
+}
+
+#place-item {
+	padding: 8px 14px 8px 14px;
+    font-size: 16px;
+}

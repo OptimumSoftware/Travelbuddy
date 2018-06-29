@@ -5,6 +5,8 @@ import URL from 'url-parse';
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import fileIcon from '@fortawesome/fontawesome-free-regular/faFile';
+import PlacesAutocomplete from 'react-places-autocomplete';
+import { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
 
 class EditEvent extends Component {
 	constructor(props) {
@@ -23,7 +25,10 @@ class EditEvent extends Component {
 			userId: "",
 			loggedIn: false,
 			jsonCategories: {},
-			categories: []
+			categories: [],
+			loadGoogleLib: false,
+			lat: 0,
+			lng: 0
 		}
 		
 		const url = "/api/loginCheck";	
@@ -60,7 +65,9 @@ class EditEvent extends Component {
 							start_date: response.startDate,
 							start_time: response.startTime,
 							end_date: response.endDate,
-							end_time: response.endTime
+							end_time: response.endTime,
+							lat: response.lat,
+							lng: response.lng
 						});
 					})
 			})
@@ -83,7 +90,29 @@ class EditEvent extends Component {
 			
 		
 		this.handleInputChange = this.handleInputChange.bind(this);
+		this.handleAddressChange = this.handleAddressChange.bind(this);
+		this.handleAddressSelect = this.handleAddressSelect.bind(this);
 	}
+	
+	handleAddressChange(location) {
+		this.setState({ location })
+	  }
+
+	handleAddressSelect(location) {
+		geocodeByAddress(location)
+			.then(results => {
+				this.setState({location: results[0]['formatted_address']})
+				return getLatLng(results[0])
+			})
+			.then(({ lat, lng }) => {
+				this.setState({
+					lat: lat,
+					lng: lng,
+				});
+			})
+			.catch(err => console.error(err))
+	  }
+	  
 	
 	render() {
 		return (
@@ -115,7 +144,34 @@ class EditEvent extends Component {
 							</div>
 							<div className="editEventItem">
 								<label className="editEventLabel">Location</label>
-								<input name="location" type="text" value={this.state.location} onChange={this.handleInputChange} />
+								 
+								<PlacesAutocomplete
+									value={this.state.location}
+									onChange={this.handleAddressChange}
+									onSelect={this.handleAddressSelect}
+								  >
+									{({ getInputProps, suggestions, getSuggestionItemProps }) => (
+									  <div>
+										<input
+										  {...getInputProps({
+											placeholder: 'Herestraat 33, Groningen',
+											name: 'location'
+										  })}
+										/>
+										<div className="select-place-container">
+										  {suggestions.map(item => {
+											const className = item.active ? 'place-item-active' : 'place-item-inactive';
+											return (
+											  <div {...getSuggestionItemProps(item, { className })} id='place-item'>
+												<span>{item.description}</span>
+											  </div>
+											)
+										  })}
+										</div>
+									  </div>
+									)}
+								  </PlacesAutocomplete>
+								
 							</div>
 						</div>
 
@@ -148,6 +204,8 @@ class EditEvent extends Component {
 							<input id="fileUpload" type="file" name="image" />
 						</div>
 						
+						<input type="hidden" name="lat" value={this.state.lat} onChange={this.handleInputChange} />
+						<input type="hidden" name="lng" value={this.state.lng} onChange={this.handleInputChange} />
 						<input type="hidden" name="owner" value={this.state.userId} onChange={this.handleInputChange}/>
 						<input type="hidden" name="eventId" value={this.state.eventId} onChange={this.handleInputChange}/>
 						

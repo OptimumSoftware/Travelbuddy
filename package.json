@@ -16,6 +16,7 @@
     "react-geolocated": "^2.4.0",
     "react-google-maps": "^9.4.5",
     "react-gravatar": "^2.6.3",
+    "react-places-autocomplete": "^7.1.2",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-script-tag": "^1.1.2",
@@ -23,6 +24,7 @@
     "react-slick": "^0.23.1",
     "react-slide-toggle": "^0.1.12",
     "react-toggle-display": "^2.2.0",
+    "scriptjs": "^2.5.8",
     "slick-carousel": "^1.8.1",
     "url-parse": "^1.4.1"
   },

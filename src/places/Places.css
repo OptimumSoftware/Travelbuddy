@@ -1,3 +1,7 @@
+#eventBox {
+	background-color: #FFBD2B;
+}
+
 .places{
     margin-top: 30px;
     width: 100%;
@@ -37,5 +41,3 @@ h3.placesText:first-letter {
     display: block;
     margin: 0 auto;
 }
-
-

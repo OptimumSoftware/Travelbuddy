@@ -4,6 +4,8 @@ import axios from 'axios';
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import fileIcon from '@fortawesome/fontawesome-free-regular/faFile';
+import PlacesAutocomplete from 'react-places-autocomplete';
+import { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
 
 class AddEvent extends Component {
 	constructor(props) {
@@ -21,9 +23,13 @@ class AddEvent extends Component {
 			userId: "",
 			loggedIn: false,
 			jsonCategories: {},
-			categories: []
+			categories: [],
+			loadGoogleLib: false,
+			lat: 0,
+			lng: 0
 		}
 		
+				
 		const url = "/api/loginCheck";	
 		axios.get(url)
 			.then(response => {
@@ -53,8 +59,32 @@ class AddEvent extends Component {
 			});
 		
 		this.handleInputChange = this.handleInputChange.bind(this);
+		this.handleAddressChange = this.handleAddressChange.bind(this);
+		this.handleAddressSelect = this.handleAddressSelect.bind(this);
 	}
 	
+	  handleAddressChange(location) {
+		this.setState({ location })
+	  }
+
+	  handleAddressSelect(location) {
+		geocodeByAddress(location)
+			.then(results => {
+				this.setState({location: results[0]['formatted_address']})
+				console.log(results[0])
+				return getLatLng(results[0])
+			})
+			.then(({ lat, lng }) => {
+				this.setState({
+					lat: lat,
+					lng: lng,
+				});
+			})
+			.catch(err => console.error(err))
+	  }
+	  
+
+		
 	render() {
 		return (
 			<main>
@@ -85,7 +115,34 @@ class AddEvent extends Component {
 							</div>
 							<div className="addEventItem">
 								<label className="addEventLabel">Location</label>
-								<input name="location" type="text" value={this.state.location} onChange={this.handleInputChange} />
+								 
+								<PlacesAutocomplete
+									value={this.state.location}
+									onChange={this.handleAddressChange}
+									onSelect={this.handleAddressSelect}
+								  >
+									{({ getInputProps, suggestions, getSuggestionItemProps }) => (
+									  <div>
+										<input
+										  {...getInputProps({
+											placeholder: 'Herestraat 33, Groningen',
+											name: 'location'
+										  })}
+										/>
+										<div className="select-place-container">
+										  {suggestions.map(item => {
+											const className = item.active ? 'place-item-active' : 'place-item-inactive';
+											return (
+											  <div {...getSuggestionItemProps(item, { className })} id='place-item'>
+												<span>{item.description}</span>
+											  </div>
+											)
+										  })}
+										</div>
+									  </div>
+									)}
+								  </PlacesAutocomplete>
+								
 							</div>
 						</div>
 
@@ -119,6 +176,8 @@ class AddEvent extends Component {
 						</div>
 						
 						<input type="hidden" name="owner" value={this.state.userId} onChange={this.handleInputChange}/>
+						<input type="hidden" name="lat" value={this.state.lat} onChange={this.handleInputChange} />
+						<input type="hidden" name="lng" value={this.state.lng} onChange={this.handleInputChange} />
 						
 						<div className="addEventRow">
 							<button type="submit">Submit event</button>

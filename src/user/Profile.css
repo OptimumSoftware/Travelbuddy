@@ -34,11 +34,12 @@
 }
 
 .settingsBlock select {
-	width: 276px;
+	width: 241px;
     height: 40px;
 	padding: 4px 4px 4px 8px;
 	font-size: 14px;
 	line-height: 28px;
+	border-radius: 2px;
 }
 
 .settingsBlock input {
@@ -97,10 +98,22 @@
 }
 
 .favorite {
-	padding: 8px 110px 8px 18px;
-	border-top: 1px solid grey;
-	display: block;
-	float: left;
+	padding: 8px 0 8px 18px;
+    border-top: 1px solid grey;
+    display: block;
+    float: left;
+    width: 100%;
+}
+
+#favoritesWrapper {
+	overflow-y: auto;
+    max-height: 360px;
+    width: 80%;
+    margin-right: 20%;
+    display: block;
+    float: left;
+    overflow-x: hidden;
+    padding-right: 17px;
 }
 
 .placeInfo {
@@ -111,9 +124,15 @@
 
 .favorite img {
 	width: 80px;
-	display: inline-block;
-	float: left;
-	margin-right: 15px;
+}
+
+.favoriteImg {
+	height: 80px;
+    width: 80px;
+    float: left;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
 }
 
 .favoriteName {
@@ -128,10 +147,10 @@
 }
 
 .deleteFavoriteIcon {
-	position: absolute;
-    right: -99px;
-    bottom: 18px;
-    font-size: 24px;
+	float: right;
+    margin-top: 20px;
+    margin-right: 30px;
+    font-size: 28px;
 }
 
 .favoriteLocation {
@@ -152,6 +171,82 @@ ul.suggestCategories li {
 	padding: 5px 0;
 	text-transform: capitalize;
 	width: 100%;
+}
+
+#userFull {
+	display: block;
+	padding-left: 16px;
+}
+
+#userGravatar {
+	display: inline-block;
+}
+
+#userName {
+	margin-top: 0;
+    font-size: 40px;
+    margin-bottom: 0;
+}
+
+#userEmail {
+	font-size: 20px;
+    margin-top: 0;
+    display: inline-block;
+	margin-left: 14px;
+}
+
+#emailWrapper {
+	margin-top: 12px;
+}
+
+#mailIcon {
+	display: inline-block;
+	font-size: 18px;
+}
+
+#locationWrapper {
+	display: block;
+	margin-top: 12px;
+    font-size: 15px;
+    padding-left: 2.5px;
+}
+
+#userInfo {
+	display: inline-block;
+    margin-left: 45px;
+    vertical-align: top;
+}
+
+#topRowWrapper {
+	margin-bottom: 50px;
+    margin-top: 25px;
+}
+
+#userCountry {
+	margin-left: 15px;
+}
+
+#userEvents {
+	margin-top: 30px;
+    margin-bottom: 40px;
+	border-bottom: 1px solid grey;
+}
+
+#userEventName {
+	margin-left: 20px;
+	margin-top: 0;
+	margin-bottom: 0;
+	font-size: 17px;
+}
+
+#userEvents {
+	width: 360px;
+}
+
+#userEvent {
+	padding: 20px 15px 20px 15px;
+    font-size: 19px;
+    border-top: 1px solid grey;
 }
 
 .friends {
