@@ -458,21 +458,22 @@ class ResultList extends Component {
 		this.removePreference = this.removePreference.bind(this);
 		this.loadData();
 	}
-	
-	loadData() {
-		const url = "/api/user/preferences";
-		axios.get(url)
-			.then(response => {
-				let temp = [];
-				for (var key in response.data) {
-					temp.push(key)
-				}
-				this.setState({
-					preferences: temp
-				})
 
-			});
-	}
+    loadData() {
+            const url = "http://localhost:5000/api/user/preferences";
+            axios.get(url)
+                .then(response => {
+                    let temp = [];
+                    for (var key in response.data) {
+                        temp.push(key)
+                    }
+                    this.setState({
+                        preferences: temp
+                    })
+
+                });
+
+    }
 
     addPreference(i, result) {
 		let pref = []
