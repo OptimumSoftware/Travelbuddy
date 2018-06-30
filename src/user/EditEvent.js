@@ -124,12 +124,12 @@ class EditEvent extends Component {
 						<div className="editEventRow">
 							<div className="editEventItem">
 								<label className="editEventLabel">Event name</label>
-								<input type="text" name="name" value={this.state.name} onChange={this.handleInputChange} />
+								<input type="text" name="name" value={this.state.name} onChange={this.handleInputChange} maxlength="128" required />
 							</div>
 
 							<div className="editEventItem">
 								<label className="editEventLabel">Category</label>
-								<select name="category" value={this.state.category} onChange={this.handleInputChange} >
+								<select name="category" value={this.state.category} onChange={this.handleInputChange} required >
 									{this.state.categories.map((item) => (
 										<option value={this.state.jsonCategories[item]}>{item.split('_').join(' ')}</option>
 									))}
@@ -140,7 +140,7 @@ class EditEvent extends Component {
 						<div className="editEventRow">
 							<div className="editEventItem">
 								<label className="editEventLabel">Short event description</label>
-								<textarea name="description" value={this.state.description} onChange={this.handleInputChange} />
+								<textarea name="description" value={this.state.description} onChange={this.handleInputChange} maxlength="250" required />
 							</div>
 							<div className="editEventItem">
 								<label className="editEventLabel">Location</label>
@@ -157,6 +157,7 @@ class EditEvent extends Component {
 											placeholder: 'Herestraat 33, Groningen',
 											name: 'location'
 										  })}
+										  maxlength="250" required 
 										/>
 										<div className="select-place-container">
 										  {suggestions.map(item => {
@@ -178,23 +179,23 @@ class EditEvent extends Component {
 						<div className="editEventRow">
 							<div className="editEventItem">
 								<label className="editEventLabel">Start date</label>
-								<input type="date" name="start_date" value={this.state.start_date} onChange={this.handleInputChange} />
+								<input type="date" name="start_date" value={this.state.start_date} onChange={this.handleInputChange} required />
 							</div>
 							
 							<div className="editEventItem">
 								<label className="editEventLabel">Start time</label>
-								<input type="time" name="start_time" value={this.state.start_time} onChange={this.handleInputChange} />
+								<input type="time" name="start_time" value={this.state.start_time} onChange={this.handleInputChange} required />
 							</div>
 						</div>
 						<div className="editEventRow">
 							<div className="editEventItem">
 								<label className="editEventLabel">End date</label>
-								<input type="date" name="end_date" value={this.state.end_date} onChange={this.handleInputChange} />
+								<input type="date" name="end_date" value={this.state.end_date} onChange={this.handleInputChange} required />
 							</div>
 							
 							<div className="editEventItem">
 								<label className="editEventLabel">End time</label>
-								<input type="time" name="end_time" value={this.state.end_time} onChange={this.handleInputChange} />
+								<input type="time" name="end_time" value={this.state.end_time} onChange={this.handleInputChange} required />
 							</div>
 						</div>
 						
@@ -204,10 +205,10 @@ class EditEvent extends Component {
 							<input id="fileUpload" type="file" name="image" />
 						</div>
 						
-						<input type="hidden" name="lat" value={this.state.lat} onChange={this.handleInputChange} />
-						<input type="hidden" name="lng" value={this.state.lng} onChange={this.handleInputChange} />
-						<input type="hidden" name="owner" value={this.state.userId} onChange={this.handleInputChange}/>
-						<input type="hidden" name="eventId" value={this.state.eventId} onChange={this.handleInputChange}/>
+						<input type="hidden" name="lat" value={this.state.lat} onChange={this.handleInputChange} required  />
+						<input type="hidden" name="lng" value={this.state.lng} onChange={this.handleInputChange} required  />
+						<input type="hidden" name="owner" value={this.state.userId} onChange={this.handleInputChange} required />
+						<input type="hidden" name="eventId" value={this.state.eventId} onChange={this.handleInputChange} required />
 						
 						<div className="editEventRow">
 							<button type="submit">Save</button>
