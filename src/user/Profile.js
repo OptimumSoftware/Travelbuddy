@@ -73,8 +73,10 @@ class Profile extends Component {
             </div>
             <Favorites />
             <Preferences />
-            <FriendsOverview userId={this.state.userId} loggedIn={this.state.loggedIn} />
-            <UserEvents />
+			<div id="eventFriendWrapper">
+				<div id="userEventsWrapper"><UserEvents /></div>
+				<FriendsOverview userId={this.state.userId} loggedIn={this.state.loggedIn} />
+			</div>
             <Settings />
 				</div>
 			</main>
@@ -649,7 +651,7 @@ class FriendsOverview extends Component {
                         <button id={'addButton'} onClick={() => this.addFriend()}  ><FontAwesomeIcon id={'plusIcon'}  icon={plusSquare}/></button>
                     </div>
                     <button id={'deleteButton'} onClick={() => this.deleteFriend()}><FontAwesomeIcon id={'minusIcon'} icon={minusSquare}/></button>
-                    <Link id={'friendLink'} to="/friends" >See friends</Link>
+                    <Link id={'friendLink'} to="/friends" >View friends</Link>
                 </div>
             </div>
 
