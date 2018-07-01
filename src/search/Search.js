@@ -299,11 +299,13 @@ class Search extends Component {
         }
 
 
+
         return (
             <div className={"data"}>
                 <div className={"searchHeader"}>
                     <div className={"col-12 search"}>
                         <h3>Search TravelBuddy</h3>
+                        <h5>{this.state.input}</h5>
                         <select onChange={this.setSearch} className='search-select'>
                             <option value="city" >City search</option>
                             <option value="keyword" >Keyword search</option>
@@ -337,7 +339,7 @@ class Search extends Component {
                                 )}
                             </PlacesAutocomplete>
                             :
-                            <input type={"text"} name={"place"} value={this.state.input} />
+                            <input type={"text"} name={"place"} onChange={this.handleChange} value={this.state.input} />
                         }
                         <button type={"submit"} name={"submit"} onClick={this.checkSearch}>Zoek</button>
                     </div>
