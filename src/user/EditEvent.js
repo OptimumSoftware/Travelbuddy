@@ -28,7 +28,9 @@ class EditEvent extends Component {
 			categories: [],
 			loadGoogleLib: false,
 			lat: 0,
-			lng: 0
+			lng: 0,
+			message: null,
+			messageId: null,
 		}
 		
 		const url = "/api/loginCheck";	
@@ -113,28 +115,69 @@ class EditEvent extends Component {
 			.catch(err => console.error(err))
 	  }
 	  
+	 editEvent() {
+		  var formData = new FormData();
+		  var image = document.getElementById("fileUpload");
+		  if(image.value != "") {
+			  console.log("image");
+			  formData.append("image", image.files[0])
+		  }
+		  
+		  let url = "/api/user/editEvent";
+		  url += "?name=" + this.state.name;
+		  url += "&description=" + this.state.description;
+		  url += "&location=" + this.state.location;
+		  url += "&startDate=" + this.state.start_date;
+		  url += "&startTime=" + this.state.start_time;
+		  url += "&endDate=" + this.state.end_date;
+		  url += "&endTime=" + this.state.end_time;
+		  url += "&owner=" + this.state.userId;
+		  url += "&lat=" + this.state.lat;
+		  url += "&lng=" + this.state.lng;
+		  url += "&eventId=" + this.state.eventId;
+		  url += "&owner=" + this.state.userId;
+		  
+		  axios.put(url, formData, {
+			  headers: {
+				  'Content-Type': 'multipart/form-data'
+			  }
+		  })
+		  .then(response => {
+			  this.setState({
+					message: response.data.message,
+					messageId: "messageOk",
+				});			  
+		  })
+		  .catch(error => {
+			  this.setState({
+					message: error.response.data.message,
+					messageId: "messageError",
+				});
+		  })
+	 }
+	  
 	
-	render() {
+	render() {		
 		return (
 			<main>
 				<h1>Edit event</h1>
 				
 				<div id="editEventWrapper">
-					<form action="/api/user/editEvent" method="POST" enctype="multipart/form-data">
+					<div>
 						<div className="editEventRow">
 							<div className="editEventItem">
 								<label className="editEventLabel">Event name</label>
 								<input type="text" name="name" value={this.state.name} onChange={this.handleInputChange} maxlength="128" required />
 							</div>
 
-							<div className="editEventItem">
+							{/*<div className="editEventItem">
 								<label className="editEventLabel">Category</label>
 								<select name="category" value={this.state.category} onChange={this.handleInputChange} required >
 									{this.state.categories.map((item) => (
 										<option value={this.state.jsonCategories[item]}>{item.split('_').join(' ')}</option>
 									))}
 								</select>
-							</div>
+							</div>*/}
 						</div>
 						
 						<div className="editEventRow">
@@ -202,7 +245,7 @@ class EditEvent extends Component {
 						<div className="editEventRow">
 							<label className="editEventLabel" id="addImageLabel">Add an image if you want:</label>
 							<label for="fileUpload" id="addImageBtn"><FontAwesomeIcon icon={fileIcon}/> Select</label>
-							<input id="fileUpload" type="file" name="image" />
+							<input id="fileUpload" type="file" name="image" accept=".png,.jpg,.jpeg,.gif"/>
 						</div>
 						
 						<input type="hidden" name="lat" value={this.state.lat} onChange={this.handleInputChange} required  />
@@ -211,9 +254,11 @@ class EditEvent extends Component {
 						<input type="hidden" name="eventId" value={this.state.eventId} onChange={this.handleInputChange} required />
 						
 						<div className="editEventRow">
-							<button type="submit">Save</button>
+							<button onClick={() => this.editEvent()}>Save</button>
 						</div>
-					</form>
+						
+						<div className="messageGeneral" id={this.state.messageId}>{this.state.message}</div>
+					</div>
 				</div>
 			</main>
 		);
