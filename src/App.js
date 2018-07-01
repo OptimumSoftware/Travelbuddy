@@ -17,6 +17,7 @@ import Modal   from './modal/Modal';
 import EventModal from './modal/EventModal';
 import Map   from './map/Map';
 import Search   from './search/Search.js';
+import Friends from './friends/Friends.js';
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import faFilter from '@fortawesome/fontawesome-free-solid/faFilter';
@@ -45,8 +46,9 @@ class App extends Component {
                     <Route path="/login" component={Login} />
                     <Route path="/profile" component={Profile} />
                     <Route path="/addEvent" component={AddEvent} />
-					<Route path="/editEvent" component={EditEvent} />
+                    <Route path="/editEvent" component={EditEvent} />
                     <Route path="/search" component={Search} />
+                    <Route path="/friends" component={Friends} />
 
                     <Footer />
 
@@ -186,12 +188,12 @@ class Home extends Component {
 					});
 			});
 	}
-	
+
 	setDefaultCategories() {
 		this.setState({
 			categories: ['restaurant', 'bar', 'car_dealer', 'hotel']
 		})
-	}	
+	}
 	
     handleClick = () => {
         this.setState({
@@ -274,7 +276,7 @@ class Home extends Component {
             </div>
         );
 
-		
+
 		let events = null;
 		if(this.state.events && this.state.events.length) {
 			events = (
@@ -283,14 +285,13 @@ class Home extends Component {
 				</div>
 			);
 		}
-		
-		
+
         <Map
             latitude = {this.state.latitude}
             longitude = {this.state.longitude}
             zoom = {this.state.zoom}
         />
-		
+
 
         let viewModal = null;
         if(this.state.showModal){
@@ -344,13 +345,16 @@ class Home extends Component {
                       calling_code={this.state.calling_code} region_name={this.state.region_name}
                       country_name={this.state.country_name}/>
 
+                <div id={'mainFilter'}>
                 <div id={'filter'} onClick={this.handleClick}>
                     <FontAwesomeIcon icon={faFilter} />
                 </div>
 
 
                 <ToggleDisplay show={this.state.show}>
+
                     <div id={'filterMenu'}>
+
                         <p className={'filterMenuItems'}>Range</p>
                         <p className={'filterMenuItems'}><input type="radio" name="range"  value="5000" onChange={this.radiusHandler} />5 km</p>
                         <p className={'filterMenuItems'}><input type="radio" name="range"  value="10000" onChange={this.radiusHandler} />10 km</p>
@@ -359,11 +363,12 @@ class Home extends Component {
                         <p className={'filterMenuItems'}><input type="radio" name="range"  value="25000" onChange={this.radiusHandler} />25 km</p>
                     </div>
                 </ToggleDisplay>
+                </div>
 
                 {viewModal}
                 {textcategories}
 				{events}
-                
+
             </main>
             </div>
         );

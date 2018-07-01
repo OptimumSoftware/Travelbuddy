@@ -6,10 +6,12 @@ import {
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import userIcon from '@fortawesome/fontawesome-free-solid/faCaretDown'
 import searchIcon from '@fortawesome/fontawesome-free-solid/faSearch'
+
 import './Header.css';
 import mainLogo from '../images/logo.svg';
 import axios from "axios/index";
 import Gravatar from 'react-gravatar'
+
 
 class Header extends Component {
     constructor(props) {
@@ -21,12 +23,6 @@ class Header extends Component {
 			check: false
 		};
 
-        const avatarURL = "/api/loginEmail"
-
-        //axios.get(avatarURL)
-        //    .then(response => {
-        //        this.setState({avatar: response.data.yourEmail})
-        //   });
 
 
         const userURL = "/api/loginName"
@@ -136,10 +132,6 @@ class Menu extends Component {
 				<a style={{display: this.state.check ? 'block': 'none' }} onClick={() => this.dispatchNewRoute('/addEvent')}><li>Add Event</li></a>
                 <a style={{display: this.state.showLogin ? 'block' : 'none' }} onClick={() => this.dispatchNewRoute('/login')}><li>Login</li></a>
 				<a style={{display: this.state.check ? 'block' : 'none' }} onClick={() => this.dispatchNewRoute('/logout')}><li>Logout</li></a>
-				{/*<li><NavLink to="/">Home</NavLink></li>
-				<li><NavLink to="/login">Login</NavLink></li>
-				<li><NavLink to="/profile">Profile</NavLink></li>
-				<li><NavLink to="/addEvent">Add Event</NavLink></li>*/}
 			</ul>
 		);
 	}

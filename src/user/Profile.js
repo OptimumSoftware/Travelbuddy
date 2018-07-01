@@ -9,12 +9,15 @@ import mailIcon from '@fortawesome/fontawesome-free-regular/faEnvelope';
 import markerIcon from '@fortawesome/fontawesome-free-solid/faMapMarker';
 import editIcon from '@fortawesome/fontawesome-free-regular/faEdit';
 import axios from 'axios';
+import { Link } from 'react-router-dom'
 import Modal   from '../modal/Modal';
 import EventModal from '../modal/EventModal';
 import Gravatar from 'react-gravatar'
 
 import solidStar from '@fortawesome/fontawesome-free-solid/faStar'
 import regularStar from '@fortawesome/fontawesome-free-regular/faStar'
+import plusSquare from '@fortawesome/fontawesome-free-regular/faPlusSquare'
+import minusSquare from '@fortawesome/fontawesome-free-regular/faMinusSquare'
 
 class Profile extends Component {
 	constructor(props) {
@@ -26,7 +29,20 @@ class Profile extends Component {
 			userId: null,
 			userEvents: []
 		}
-			
+		
+		const url = "/api/loginCheck";	
+		axios.get(url)
+			.then(response => {
+				if(response.data['username']) {
+					const usr = response.data['username'];
+					this.setState({
+						userId: usr,
+						loggedIn: true
+					});
+				}
+			})
+
+
 		const grav = "/api/loginName"
         axios.get(grav)
             .then(response => {
@@ -52,13 +68,14 @@ class Profile extends Component {
 		return (
 			<main>
 				<div id="profileWrapper">
-					<div id="topRowWrapper">
-						<User userId={this.state.userId}email={this.state.email} country={this.state.country} />
-					</div>
-					<Favorites />
-					<Preferences />
-					<UserEvents />
-					<Settings />
+            <div id="topRowWrapper">
+              <User userId={this.state.userId} email={this.state.email} country={this.state.country} />
+            </div>
+            <Favorites />
+            <Preferences />
+            <FriendsOverview userId={this.state.userId} loggedIn={this.state.loggedIn} />
+            <UserEvents />
+            <Settings />
 				</div>
 			</main>
 		);
@@ -176,7 +193,7 @@ class Favorites extends Component {
 		this.proxyUrl = "https://cors-anywhere.herokuapp.com/";
 		this.imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxheight=234&maxwidth=280&photoreference=";
 		this.key = "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E";
-		
+
 		this.loadData();
 	}
 	
@@ -189,14 +206,14 @@ class Favorites extends Component {
             })
         })
     }
-	
+
 	loadData() {
 		axios.get(this.url)
 			.then(response => {
 				this.setState({
 					items: response.data
 				});
-				
+
 			})
 			.then(() => {
 				this.state.items.forEach(favorite => {
@@ -211,7 +228,7 @@ class Favorites extends Component {
 								})
 					}
 				})
-				
+
 			})
 			.then(() => {console.log(this.state.placeDetails)})
 	}
@@ -304,7 +321,7 @@ class Favorites extends Component {
 						this.state.items && this.state.items.length ?
 							this.state.items.map((item, index) => {
 								let img = place
-								if(item.type === "place") {						
+								if(item.type === "place") {
 									if(item.placeId in this.state.placeDetails) {
 										const place = this.state.placeDetails[item.placeId]['result'];
 										if('photos' in place) {
@@ -317,7 +334,7 @@ class Favorites extends Component {
 															place.name,
 															img,
 															place.vicinity,
-															place.opening_hours.open_now, 
+															place.opening_hours.open_now,
 															place.geometry.location.lat,
 															place.geometry.location.lng,
 															place.place_id
@@ -476,21 +493,22 @@ class ResultList extends Component {
 		this.removePreference = this.removePreference.bind(this);
 		this.loadData();
 	}
-	
-	loadData() {
-		const url = "/api/user/preferences";
-		axios.get(url)
-			.then(response => {
-				let temp = [];
-				for (var key in response.data) {
-					temp.push(key)
-				}
-				this.setState({
-					preferences: temp
-				})
-				
-			}); 
-	}
+
+    loadData() {
+            const url = "http://localhost:5000/api/user/preferences";
+            axios.get(url)
+                .then(response => {
+                    let temp = [];
+                    for (var key in response.data) {
+                        temp.push(key)
+                    }
+                    this.setState({
+                        preferences: temp
+                    })
+
+                });
+
+    }
 
     addPreference(i, result) {
 		let pref = []
@@ -533,7 +551,7 @@ class ResultList extends Component {
 						</ul>
 					</div>
 					<div id="preferenceList">
-                        {	
+                        {
 							this.state.preferences && this.state.preferences.length ?
 							this.state.preferences.map((preference, index) => {return (
 								<label className="preference" onClick={() => this.removePreference(index, preference, this.props.object[preference])}>
@@ -550,7 +568,94 @@ class ResultList extends Component {
 				</div>
         )
     }
+}
 
+class FriendsOverview extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            name: '',
+            jsonCategories: {},
+            userList: [],
+            results: [],
+            searchBar: "failed",
+            status: []
+        }
+
+
+        axios.get('/api/userList')
+            .then(result => {
+                let temp = [];
+                console.log(temp)
+                this.setState({
+                    jsonCategories: result.data.users
+                })
+
+                {this.state.jsonCategories.map((values) => {
+                    temp.push(values[0])
+                })}
+
+                this.setState({
+                    userList: temp
+                })
+                console.log("de userlist" + this.state.userList)
+            });
+
+
+    }
+
+
+
+    namechangedhandler = (event) => {
+        this.setState(
+            {name: event.target.value}
+        )
+
+    }
+
+    deleteFriend = (event) => {
+        const url = '/api/user/friends/' + this.state.name;
+        axios.delete(url).then((result) => {
+            this.setState({
+                status: result.data.deleteStatus,
+                name: ''
+            })
+            console.log("resultaat van delete " + this.state.status)
+        })
+    }
+
+    addFriend = (event) => {
+        const url = '/api/user/friends?friend=' + this.state.name;
+        axios.post(url).then((result) => {
+            this.setState({
+                status: result.data.addfriend,
+                name: ''
+            })
+            console.log("vriend toevoegen " + this.state.status)
+        })
+    }
+
+    render() {
+        const url = '/api/user/friends';
+        return (
+            <div className={'friends'}>
+                <h2 id={'friendsTag'}>Friends</h2>
+                <h4 id={'friendH4'}>Add a friend</h4>
+                <h5 id='error' style={{display: this.state.status ? 'none' : 'block'}}>Something went wrong, please check if you used the correct username</h5>
+                <div className={'friendsContent'}>
+                    <div id={'friendForm'}>
+                        <input id="addFriends" type="text" value={this.state.name} onChange={this.namechangedhandler} name="friend"  placeholder={'Username'}  />
+                        <button id={'addButton'} onClick={() => this.addFriend()}  ><FontAwesomeIcon id={'plusIcon'}  icon={plusSquare}/></button>
+                    </div>
+                    <button id={'deleteButton'} onClick={() => this.deleteFriend()}><FontAwesomeIcon id={'minusIcon'} icon={minusSquare}/></button>
+                    <Link id={'friendLink'} to="/friends" >See friends</Link>
+                </div>
+            </div>
+
+        );
+
+    }
 }
 
 class Settings extends Component {
@@ -591,7 +696,7 @@ class Settings extends Component {
 				this.setState({countries: response.data});
 			})
 	}
-	
+
 	savePreferences() {
 		let url = '/api/user';
 		url += "?firstName=" + this.state.firstName;
@@ -600,7 +705,7 @@ class Settings extends Component {
 		url += "&email=" + this.state.email;
 		url += "&password=" + this.state.password;
 		url += "&country=" + this.state.country;
-		
+
 		axios.put(url)
 			.then(response => {
 				if(response.data) {

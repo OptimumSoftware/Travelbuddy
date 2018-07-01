@@ -258,6 +258,68 @@ ul.suggestCategories li {
     border-top: 1px solid grey;
 }
 
+.friends {
+	width: 33%;
+	height: 20%;
+	border-top: 1px solid grey;
+	float: left;
+}
+
+.friendsContent {
+	display: inline-block;
+}
+
+#friendsTag{
+margin-right: 20px;
+}
+
+#friendLink {
+	margin-bottom: 10px;
+}
+
+#friendH4 {
+	margin-bottom: -1px;
+}
+
+#addFriends {
+	width: 260px;
+	padding: 4px 4px 4px 8px;
+	font-size: 14px;
+	line-height: 28px;
+	margin-top: 4px;
+	margin-bottom: 10px;
+}
+
+#plusIcon {
+	width: 30px;
+	height: 20px;
+}
+
+#minusIcon {
+	width: 30px;
+	height: 20px;
+}
+
+#addButton {
+	border: none;
+	background-color: transparent;
+
+}
+
+#deleteButton {
+	border: none;
+	background-color: transparent;
+
+}
+
+#friendForm {
+	display: inherit;
+}
+
+#error{
+	color: #ff253a;
+}
+
 .profileError {
 	color: #f57c00;
     font-weight: 700;
