@@ -71,8 +71,7 @@ class LoginForm extends Component {
 
                     <label id="forgotPassword"><a href="">Forgot password</a></label>
 
-                    <button  name="submit" onClick={() => this.loginCheck()} value='login'>Login</button>
-                    {/*<button  name="submit" onClick={() => this.loginCheck()} value='login' disabled={!isEnabled}>Login</button>*/}
+                    <button  name="submit" onClick={() => this.loginCheck()} value='login' disabled={!isEnabled}>Login</button>
                 </div>
 
             </div>

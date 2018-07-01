@@ -129,15 +129,9 @@ class Menu extends Component {
 			<ul id="menu">
 				<a onClick={() => this.dispatchNewRoute('/')}><li>Home</li></a>
 				<a style={{display: this.state.check ? 'block': 'none' }} onClick={() => this.dispatchNewRoute('/profile')}><li>Profile</li></a>
-				{/*<a onClick={() => this.dispatchNewRoute('/profile')}><li>Profile</li></a>*/}
 				<a style={{display: this.state.check ? 'block': 'none' }} onClick={() => this.dispatchNewRoute('/addEvent')}><li>Add Event</li></a>
                 <a style={{display: this.state.showLogin ? 'block' : 'none' }} onClick={() => this.dispatchNewRoute('/login')}><li>Login</li></a>
-                {/*<a style={{display: this.state.check ? 'block' : 'none' }} onClick={() => this.dispatchNewRoute('/friends')}><li>Friends</li></a>*/}
 				<a style={{display: this.state.check ? 'block' : 'none' }} onClick={() => this.dispatchNewRoute('/logout')}><li>Logout</li></a>
-				{/*<li><NavLink to="/">Home</NavLink></li>
-				<li><NavLink to="/login">Login</NavLink></li>
-				<li><NavLink to="/profile">Profile</NavLink></li>
-				<li><NavLink to="/addEvent">Add Event</NavLink></li>*/}
 			</ul>
 		);
 	}
