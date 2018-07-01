@@ -252,6 +252,11 @@ ul.suggestCategories li {
 	width: 360px;
 }
 
+#userEventsWrapper {
+	display: inline-block;
+	width: 50%;
+}
+
 #userEvent {
 	padding: 20px 15px 20px 15px;
     font-size: 19px;
@@ -259,10 +264,10 @@ ul.suggestCategories li {
 }
 
 .friends {
-	width: 33%;
-	height: 20%;
-	border-top: 1px solid grey;
-	float: left;
+	width: 50%;
+    display: inline-block;
+	vertical-align: top;
+    margin-top: 30px;
 }
 
 .friendsContent {
@@ -270,7 +275,8 @@ ul.suggestCategories li {
 }
 
 #friendsTag{
-margin-right: 20px;
+	margin-right: 20px;
+    margin-top: 0;
 }
 
 #friendLink {
