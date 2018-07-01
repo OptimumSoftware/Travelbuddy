@@ -67,11 +67,21 @@ header h1 {
 }
 
 #searchIcon {
-	font-size: 25px;
+	font-size: 40px;
 	margin-left: 590px;
-	margin-top: -33px;
+	margin-top: -50px;
+
+
 
 }
+
+#searchButton {
+	background: transparent;
+	border: none;
+	height: 50px;
+	width: 50px;
+
+ }
 
 #headerName {
 	float: right;
