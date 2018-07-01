@@ -16,7 +16,7 @@ class Search extends Component {
         this.state = {
             results: [],
             categories: [],
-            input: '',
+			input: "",
             type: "",
             radius: "",
             language: "",
@@ -38,7 +38,6 @@ class Search extends Component {
         this.getCategories()
         this.handleAddressChange = this.handleAddressChange.bind(this);
         this.handleAddressSelect = this.handleAddressSelect.bind(this);
-        this.redirectedSearch();
     }
 
     apikey = "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E";
@@ -51,8 +50,31 @@ class Search extends Component {
                 currentLng: position.coords.longitude
             })
         })
+		this.redirectedSearch();
     }
 
+	redirectedSearch() {
+        let sq = window.location.search;
+        sq = sq.substring(3)
+        if (sq.length > 0) {
+			this.setState({
+				input: sq,
+				searchType: "keyword"
+			})
+			document.getElementById("typeSearch").value = "keyword";
+
+			{/*this.searchByKeyword()*/}
+        }else {
+            console.log("lege qs")
+        }
+    }
+	
+	handleChange = (e) => {
+        this.setState({
+            input: e.target.value,
+        })
+    }
+	
 
     handleClick = () => {
         this.setState({
@@ -74,35 +96,9 @@ class Search extends Component {
         })
     }
 
-
-    redirectedSearch = (e) => {
-        let sq = window.location.search;
-        sq = sq.substring(3)
-        this.setState({
-            input: sq
-        });
-        if (sq.length > 0) {
-            console.log("dit is de sq " + sq);
-
-            this.searchByKeyword()
-        }else {
-            console.log("lege qs")
-        }
-
-         }
-
-
-
-
     hideModal = () => {
         this.setState({showModal: false})
     };
-
-    handleChange = (e) => {
-        this.setState({
-            input: e.target.value,
-        })
-    }
 
     getCategories() {
         axios.get('/api/categories')
@@ -303,8 +299,8 @@ class Search extends Component {
             <div className={"data"}>
                 <div className={"searchHeader"}>
                     <div className={"col-12 search"}>
-                        <h3>Search TravelBuddy</h3>
-                        <select onChange={this.setSearch} className='search-select'>
+                        <h3>Search TravelBuddy {this.state.input}</h3>
+                        <select onChange={this.setSearch} className='search-select' id='typeSearch'>
                             <option value="city" >City search</option>
                             <option value="keyword" >Keyword search</option>
                         </select>
@@ -337,7 +333,7 @@ class Search extends Component {
                                 )}
                             </PlacesAutocomplete>
                             :
-                            <input type={"text"} name={"place"} value={this.state.input} />
+                            <input type={"text"} name={"place"} value={this.state.input} onChange={this.handleChange}/>
                         }
                         <button type={"submit"} name={"submit"} onClick={this.checkSearch}>Zoek</button>
                     </div>
