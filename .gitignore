@@ -7,6 +7,9 @@
 .idea/**/dictionaries
 .idea/**/shelf
 .idea/workspace.xml
+/__pycache__/
+package-lock.json
+/build
 
 # Sensitive or high-churn files
 .idea/**/dataSources/

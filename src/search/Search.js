@@ -32,12 +32,12 @@ class Search extends Component {
             firstPage: false,
             savedQuery: "",
             checkPage: 0,
-			loadGoogleLib: false
+            loadGoogleLib: false
         };
 
         this.getCategories()
-		this.handleAddressChange = this.handleAddressChange.bind(this);
-		this.handleAddressSelect = this.handleAddressSelect.bind(this);
+        this.handleAddressChange = this.handleAddressChange.bind(this);
+        this.handleAddressSelect = this.handleAddressSelect.bind(this);
     }
 
     apikey = "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E";
@@ -246,18 +246,18 @@ class Search extends Component {
             radius: e.target.value
         })
     }
-	
-	handleAddressChange(input) {
-		this.setState({ input })
-	}
-	
-	handleAddressSelect(input) {
-		geocodeByAddress(input)
-			.then(results => {
-				this.setState({input: results[0]['formatted_address']})
-			})
-			.catch(err => console.error(err))
-	}
+
+    handleAddressChange(input) {
+        this.setState({ input })
+    }
+
+    handleAddressSelect(input) {
+        geocodeByAddress(input)
+            .then(results => {
+                this.setState({input: results[0]['formatted_address']})
+            })
+            .catch(err => console.error(err))
+    }
 
 
     render() {
@@ -288,37 +288,37 @@ class Search extends Component {
                             <option value="city" >City search</option>
                             <option value="keyword" >Keyword search</option>
                         </select>
-						{this.state.searchType == "city" ?
-							<PlacesAutocomplete
-								value={this.state.input}
-								onChange={this.handleAddressChange}
-								onSelect={this.handleAddressSelect}
-							  >
-								{({ getInputProps, suggestions, getSuggestionItemProps }) => (
-									<div id="autoSearch">
-										<input
-										  {...getInputProps({
-											placeholder: 'Groningen',
-											name: 'place'
-										  })}
-										  id="autoSearchBar"
-										/>
-										<div className="search-suggest-select-container">
-										  {suggestions.map(item => {
-											const className = item.active ? 'search-suggest-item-active' : 'search-suggest-item-inactive';
-											return (
-											  <div {...getSuggestionItemProps(item, { className })} id='search-suggest-item'>
-												<span>{item.description}</span>
-											  </div>
-											)
-										  })}
-										</div>
-									</div>
-								)}
-							</PlacesAutocomplete>
-							:
-							<input type={"text"} name={"place"} onChange={this.handleChange} value={this.state.input} />
-						}
+                        {this.state.searchType == "city" ?
+                            <PlacesAutocomplete
+                                value={this.state.input}
+                                onChange={this.handleAddressChange}
+                                onSelect={this.handleAddressSelect}
+                            >
+                                {({ getInputProps, suggestions, getSuggestionItemProps }) => (
+                                    <div id="autoSearch">
+                                        <input
+                                            {...getInputProps({
+                                                placeholder: 'Groningen',
+                                                name: 'place'
+                                            })}
+                                            id="autoSearchBar"
+                                        />
+                                        <div className="search-suggest-select-container">
+                                            {suggestions.map(item => {
+                                                const className = item.active ? 'search-suggest-item-active' : 'search-suggest-item-inactive';
+                                                return (
+                                                    <div {...getSuggestionItemProps(item, { className })} id='search-suggest-item'>
+                                                        <span>{item.description}</span>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
+                            </PlacesAutocomplete>
+                            :
+                            <input type={"text"} name={"place"} onChange={this.handleChange} value={this.state.input} />
+                        }
                         <button type={"submit"} name={"submit"} onClick={this.checkSearch}>Zoek</button>
                     </div>
                 </div>
@@ -356,7 +356,7 @@ class Search extends Component {
                                         </li>
                                     </ul>
                                 </div>
-                                    <RadiusFilter handler={this.changeRadius} />
+                                <RadiusFilter handler={this.changeRadius} />
                             </div>
                         </div>
                         }
@@ -370,10 +370,10 @@ class Search extends Component {
                             <ResultList results={this.state.results} results={this.state.results} handlerss={this.modalHandler}/>
                             <div className={"pagination"}>
                                 {this.state.prevPage &&
-                                    <p onClick={this.getPrevPage} className={"prev"} >Show previous results</p>
+                                <p onClick={this.getPrevPage} className={"prev"} >Show previous results</p>
                                 }
                                 {this.state.nextPage &&
-                                    <p onClick={this.getNextPage} className={"next"} >Show next results</p>
+                                <p onClick={this.getNextPage} className={"next"} >Show next results</p>
                                 }
                             </div>
                         </div>

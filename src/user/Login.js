@@ -20,16 +20,38 @@ class Login extends Component {
 class LoginForm extends Component {
 	constructor(props) {
 		super(props);
-		
+
 		this.state = {
 			email: "",
 			password: "",
+            status: true,
+			message:''
 		}
-		
+
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
-	
+
+    loginCheck = (event) => {
+		const url = '/login?email=' + this.state.email + '&password=' + this.state.password
+        axios.post(url)
+			.then((result) =>{
+                    this.setState({
+						status: true
+                    })
+
+                    window.location='/profile'
+            })
+			.catch(erros => {
+                this.setState({
+					status: false,
+					email: '',
+					password: ''
+                })
+			})
+        console.log('de status is ' + this.state.status)
+    }
+
 	render() {
 
         const isEnabled =
@@ -37,23 +59,25 @@ class LoginForm extends Component {
             this.state.password.length > 0;
 
 		return (
-			<div id="loginForm">
-				<h3>Already a member?</h3>
-				<form onSubmit={this.handleSubmit} action='/login' method='POST'>
-					<label>Email address</label>
-					<input type="text" name="email" id={'email'} value={this.state.email} onChange={this.handleInputChange} placeholder="eg., johndoe@gmail.com"/>
-					
-					<label>Password</label>
-					<input type="password" name="password" value={this.state.password} onChange={this.handleInputChange} placeholder="eg., •••••••"/>
-					
-					<label id="forgotPassword"><a href="">Forgot password</a></label>
-					
-					<button type="submit" name="submit" value='login' disabled={!isEnabled}>Login</button>
-				</form>
-			</div>
+            <div id="loginForm">
+                <h3>Already a member?</h3>
+                <h5 id='error' style={{display: this.state.status ? 'none' : 'block'}}>wrong email or password</h5>
+                <div>
+                    <label>Email address</label>
+                    <input type="text" name="email" id={'email'} value={this.state.email} onChange={this.handleInputChange} placeholder="eg., johndoe@gmail.com"/>
+
+                    <label>Password</label>
+                    <input type="password" name="password" value={this.state.password} onChange={this.handleInputChange} placeholder="eg., •••••••"/>
+
+                    <label id="forgotPassword"><a href="">Forgot password</a></label>
+
+                    <button  name="submit" onClick={() => this.loginCheck()} value='login' disabled={!isEnabled}>Login</button>
+                </div>
+
+            </div>
 		);
 	}
-	
+
 	handleInputChange(event) {
 		const targetField = event.target;
 		const value = targetField.value;
@@ -62,7 +86,7 @@ class LoginForm extends Component {
 			[field]: value,
 		});
 	}
-	
+
 	handleSubmit(event) {
 		// alert("Logged in! " + this.state.email + ": " + this.state.password);
 	}
@@ -71,7 +95,7 @@ class LoginForm extends Component {
 class RegisterForm extends Component {
 	constructor(props) {
 		super(props);
-		
+
 		this.state = {
 			username: "",
 			firstname: "",
@@ -81,12 +105,12 @@ class RegisterForm extends Component {
 			country: "",
 			countries: []
 		}
-		
+
 		axios.get("/api/countries")
 				.then(response => {
 					this.setState({countries: response.data});
 				})
-		
+
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
@@ -150,7 +174,7 @@ class RegisterForm extends Component {
 			[field]: value
 		});
 	}
-	
+
 	handleSubmit(event) {
 		alert("Register successful! " + this.state.email + ": " + this.state.password);
 	}
