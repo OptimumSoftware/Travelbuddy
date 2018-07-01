@@ -135,6 +135,12 @@
     align-items: center;
 }
 
+#removeEventIcon {
+	vertical-align: top;
+    margin-left: 4px;
+    padding-top: 3px;
+}
+
 .favoriteName {
 	display: block;
 	vertical-align: top;
@@ -272,4 +278,5 @@ ul.suggestCategories li {
 .messageGeneral {
 	margin-top: 15px;
 	font-weight: bold;
+	white-space: pre-line;
 }

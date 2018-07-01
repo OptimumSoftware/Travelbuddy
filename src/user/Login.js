@@ -91,6 +91,31 @@ class RegisterForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
+	register() {
+		let url = '/register';
+		url += "?firstName=" + this.state.firstname;
+		url += "&lastName=" + this.state.lastname;
+		url += "&username=" + this.state.username;
+		url += "&email=" + this.state.email;
+		url += "&password=" + this.state.password;
+		url += "&country=" + this.state.country;
+		
+		axios.post(url)
+			.then(response => {
+				if(response.data) {
+					this.setState({
+						message: response.data.message,
+						messageId: "messageOk",
+					});
+				}
+			})
+			.catch(error => {
+				this.setState({
+					message: error.response.data.message,
+					messageId: "messageError",
+				});
+			});
+	}
 
 	render() {
         const isEnabled =
@@ -104,32 +129,34 @@ class RegisterForm extends Component {
 		return (
 			<div id="registerForm" >
 						<h3>Register</h3>
-						<form onSubmit={this.handleSubmit} action='/register' method='POST'>
+						<div>
 
                             <label>Username</label>
-                            <input type="text" name="username" value={this.state.username} onChange={this.handleInputChange} placeholder="eg., johndoe54"/>
+                            <input type="text" name="username" value={this.state.username} onChange={this.handleInputChange} placeholder="eg., johndoe54" maxlength="64" required />
 
                             <label>Email address</label>
-							<input type="text" name="email" value={this.state.email} onChange={this.handleInputChange} placeholder="eg., johndoe@gmail.com"/>
+							<input type="text" name="email" value={this.state.email} onChange={this.handleInputChange} placeholder="eg., johndoe@gmail.com" maxlength="64" required />
 
 							<label>First Name</label>
-							<input type="text" name="firstname" value={this.state.firstname} onChange={this.handleInputChange} placeholder="eg., John"/>
+							<input type="text" name="firstname" value={this.state.firstname} onChange={this.handleInputChange} placeholder="eg., John" maxlength="64" required />
 
 							<label>Last Name</label>
-							<input type="text" name="lastname" value={this.state.lastname} onChange={this.handleInputChange} placeholder="eg., Doe"/>
+							<input type="text" name="lastname" value={this.state.lastname} onChange={this.handleInputChange} placeholder="eg., Doe" maxlength="64" required />
 
 							<label>Password</label>
-                            <input type="password" name="password" value={this.state.password} onChange={this.handleInputChange} placeholder="eg., •••••••"/>
+                            <input type="password" name="password" value={this.state.password} onChange={this.handleInputChange} placeholder="eg., •••••••" maxlength="64" required />
 
                             <label>Country</label>
-                            <select name="country" value={this.state.country} onChange={this.handleInputChange}>
+                            <select name="country" value={this.state.country} onChange={this.handleInputChange} required>
 								{this.state.countries.map((item) => (
 									<option value={item.code}>{item.name}</option>
 								))}
 							</select>
 
-							<button type="submit" name="submit" disabled={!isEnabled} value='register' className='registerBtn'>Register</button>
-						</form>
+							<button name="submit" disabled={!isEnabled} value='register' className='registerBtn' onClick={() => this.register()}>Register</button>
+							
+							<div className="messageGeneral" id={this.state.messageId}>{this.state.message}</div>
+						</div>
 					</div>
 		);
 	}

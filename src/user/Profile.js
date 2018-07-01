@@ -23,6 +23,7 @@ class Profile extends Component {
 		this.state = {
 			email: "",
 			country: "",
+			userId: null,
 			userEvents: []
 		}
 			
@@ -32,7 +33,8 @@ class Profile extends Component {
 				this.setState(
 					{
 						email: response.data.yourEmail,
-						country: response.data.yourCountry
+						country: response.data.yourCountry,
+						userId: response.data.yourName
 					}
 				)
             })
@@ -44,27 +46,18 @@ class Profile extends Component {
 						});
 					})
 			})
-			
-		axios.get("/api/user/getEvents")
-			.then(response => {
-				response = response.data;
-				this.setState({
-					userEvents: response
-				});
-			});
 	}
-
 	
 	render() {	
 		return (
 			<main>
 				<div id="profileWrapper">
 					<div id="topRowWrapper">
-						<User email={this.state.email} country={this.state.country} />
+						<User userId={this.state.userId}email={this.state.email} country={this.state.country} />
 					</div>
 					<Favorites />
 					<Preferences />
-					<UserEvents events={this.state.userEvents} />
+					<UserEvents />
 					<Settings />
 				</div>
 			</main>
@@ -94,29 +87,71 @@ class User extends Component {
 }
 
 class UserEvents extends Component {
+	
+	constructor(props) {
+		super(props);
+		
+		this.state = {
+			userEvents: [],
+			message: null,
+			messageId: null,
+		}
+		
+		axios.get("/api/user/getEvents")
+			.then(response => {
+				response = response.data;
+				this.setState({
+					userEvents: response
+				});
+			})	
+		
+	}
+	
+	removeEvent(id, index) {		
+		const removeUrl = '/api/event?eventId=' + id;
+		axios.delete(removeUrl)
+			.then(response => {
+				  this.setState({
+						message: null,
+						messageId: null,
+					});			  
+					let events = this.state.userEvents;
+					events.splice(index, 1);
+					this.setState({
+						userEvents: events
+					})
+			  })
+			  .catch(error => {
+				  this.setState({
+						message: error.response.data.message,
+						messageId: "messageError",
+					});
+			  })
+	}
+	
 	render() {
 		return(
 			<div id="userEvents">
 				<h2>Your events</h2>
 					{
-						this.props.events && this.props.events.length ? (
+						this.state.userEvents && this.state.userEvents.length ? (
 							<div id="userEventList">
-								{this.props.events.map(event => {
+								{this.state.userEvents.map((event, index) => {
 									const url = "/editEvent?id=" + event.id
 									return (
-										<a href={url}>
-											<div id="userEvent">
-												<FontAwesomeIcon icon={editIcon} id="editIcon"/>
-												 <label id="userEventName">{event.name}</label>
-											</div>
-										</a>
+										<div id="userEvent">
+											<a href={url}><FontAwesomeIcon icon={editIcon} id="editIcon"/></a>
+											<FontAwesomeIcon icon={deleteIcon} id="removeEventIcon" onClick={() => this.removeEvent(event.id, index)}/>
+											<label id="userEventName">{event.name}</label>
+										</div>
 									)
 								})}
+								<div className="messageGeneral" id={this.state.messageId}>{this.state.message}</div>
 							</div>
 						)
 						:
 						<div class="profileError">
-							No favorites!
+							You have not created events!
 						</div>
 					}
 			</div>
@@ -597,39 +632,39 @@ class Settings extends Component {
 				<div className="settingsRow">
 					<div className="settingsBlock">
 						<label>First name</label>
-						<input type="text" name="firstName" value={this.state.firstName} onChange={this.handleInputChange}/>
+						<input type="text" name="firstName" value={this.state.firstName} onChange={this.handleInputChange} maxlength="64" required />
 					</div>
 					
 					<div className="settingsBlock">
 						<label>Last name</label>
-						<input type="text" name="lastName" value={this.state.lastName} onChange={this.handleInputChange}/>
+						<input type="text" name="lastName" value={this.state.lastName} onChange={this.handleInputChange} maxlength="64" required />
 					</div>
 				</div>
 				
 				<div className="settingsRow">
 					<div className="settingsBlock">
-						<label>Username</label>
+						<label>Username (Not changable)</label>
 						<input type="text" name="username" value={this.state.username} readonly/>
 					</div>
 				</div>
 				<div className="settingsRow">
 					<div className="settingsBlock">
-						<label>Email address</label>
-						<input type="text" name="email" value={this.state.email} onChange={this.handleInputChange}/>
+						<label>Email address (Not changeable)</label>
+						<input type="text" name="email" value={this.state.email} onChange={this.handleInputChange} readonly/>
 					</div>
 				</div>
 				
 				<div className="settingsRow">
 					<div className="settingsBlock">
 						<label>New password</label>
-						<input type="password" name="password" value={this.state.password} placeholder="password" onChange={this.handleInputChange}/>
+						<input type="password" name="password" value={this.state.password} placeholder="Enter new password" onChange={this.handleInputChange} maxlength="64" />
 					</div>
 				</div>
 				
 				<div className="settingsRow">
 					<div className="settingsBlock">
 						<label>Country</label>
-						<select name="country" value={this.state.country} onChange={this.handleInputChange}>
+						<select name="country" value={this.state.country} onChange={this.handleInputChange} required>
 							{this.state.countries.map((item) => (
 								<option value={item.code}>{item.name}</option>
 							))}

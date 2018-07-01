@@ -26,7 +26,9 @@ class AddEvent extends Component {
 			categories: [],
 			loadGoogleLib: false,
 			lat: 0,
-			lng: 0
+			lng: 0,
+			message: null,
+			messageId: null,
 		}
 		
 				
@@ -83,29 +85,88 @@ class AddEvent extends Component {
 			.catch(err => console.error(err))
 	  }
 	  
-
-		
+	  
+	  addEvent() {
+		  var formData = new FormData();
+		  var image = document.getElementById("fileUpload");
+		  if(image.value != "") {
+			  console.log("image");
+			  formData.append("image", image.files[0])
+		  }
+		  
+		  let url = "/api/event";
+		  url += "?name=" + this.state.name;
+		  url += "&description=" + this.state.description;
+		  url += "&location=" + this.state.location;
+		  url += "&startDate=" + this.state.start_date;
+		  url += "&startTime=" + this.state.start_time;
+		  url += "&endDate=" + this.state.end_date;
+		  url += "&endTime=" + this.state.end_time;
+		  url += "&owner=" + this.state.userId;
+		  url += "&lat=" + this.state.lat;
+		  url += "&lng=" + this.state.lng;
+		  
+		  axios.post(url, formData, {
+			  headers: {
+				  'Content-Type': 'multipart/form-data'
+			  }
+		  })
+		  .then(response => {
+			  this.setState({
+					message: response.data.message,
+					messageId: "messageOk",
+				});			  
+			  this.emptyForm();
+		  })
+		  .catch(error => {
+			  this.setState({
+					message: error.response.data.message,
+					messageId: "messageError",
+				});
+		  })
+	  }
+	  
+	emptyForm() {
+		this.setState({
+			name: "",
+			description: "",
+			location: "",
+			start_date: "",
+			start_time: "",
+			end_date: "",
+			end_time: "",
+			lat: "",
+			lng: "",
+		});
+		document.getElementById("fileUpload").value = "";
+	}
+	  
 	render() {
+		let message = this.state.message;
+		if(message) {
+			message = message.replace(/<br\s*[\/]?>/gi, "\n");
+		}
+		
 		return (
 			<main>
 				<h1>Add event</h1>
 				
 				<div id="addEventWrapper">
-					<form action="/api/event" method="POST" enctype="multipart/form-data">
+					<div>
 						<div className="addEventRow">
 							<div className="addEventItem">
 								<label className="addEventLabel">Event name</label>
 								<input type="text" name="name" value={this.state.name} onChange={this.handleInputChange} maxlength="128" required />
 							</div>
 
-							<div className="addEventItem">
+							{/*<div className="addEventItem">
 								<label className="addEventLabel">Category</label>
 								<select name="category" value={this.state.category} onChange={this.handleInputChange} required >
 									{this.state.categories.map((item) => (
 										<option value={this.state.jsonCategories[item]}>{item.split('_').join(' ')}</option>
 									))}
 								</select>
-							</div>
+							</div>*/}
 						</div>
 						
 						<div className="addEventRow">
@@ -173,7 +234,7 @@ class AddEvent extends Component {
 						<div className="addEventRow">
 							<label className="addEventLabel" id="addImageLabel">Add an image if you want:</label>
 							<label for="fileUpload" id="addImageBtn"><FontAwesomeIcon icon={fileIcon}/> Select</label>
-							<input id="fileUpload" type="file" name="image" />
+							<input id="fileUpload" type="file" name="image" accept=".png,.jpg,.jpeg,.gif" />
 						</div>
 						
 						<input type="hidden" name="owner" value={this.state.userId} onChange={this.handleInputChange} required />
@@ -181,9 +242,11 @@ class AddEvent extends Component {
 						<input type="hidden" name="lng" value={this.state.lng} onChange={this.handleInputChange} required />
 						
 						<div className="addEventRow">
-							<button type="submit">Submit event</button>
+							<button onClick={() => this.addEvent()}>Submit event</button>
 						</div>
-					</form>
+						
+						<div className="messageGeneral" id={this.state.messageId}>{message}</div>
+					</div>
 				</div>
 			</main>
 		);
