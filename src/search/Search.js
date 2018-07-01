@@ -38,6 +38,7 @@ class Search extends Component {
         this.getCategories()
         this.handleAddressChange = this.handleAddressChange.bind(this);
         this.handleAddressSelect = this.handleAddressSelect.bind(this);
+        this.redirectedSearch();
     }
 
     apikey = "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E";
@@ -72,6 +73,25 @@ class Search extends Component {
             modalId: id,
         })
     }
+
+
+    redirectedSearch = (e) => {
+        let sq = window.location.search;
+        sq = sq.substring(3)
+        this.setState({
+            input: sq
+        });
+        if (sq.length > 0) {
+            console.log("dit is de sq " + sq);
+
+            this.searchByKeyword()
+        }else {
+            console.log("lege qs")
+        }
+
+         }
+
+
 
 
     hideModal = () => {
@@ -317,7 +337,7 @@ class Search extends Component {
                                 )}
                             </PlacesAutocomplete>
                             :
-                            <input type={"text"} name={"place"} onChange={this.handleChange} value={this.state.input} />
+                            <input type={"text"} name={"place"} value={this.state.input} />
                         }
                         <button type={"submit"} name={"submit"} onClick={this.checkSearch}>Zoek</button>
                     </div>

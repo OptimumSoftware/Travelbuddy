@@ -20,7 +20,8 @@ class Header extends Component {
 		this.state = {
 			name: "",
 			avatar: "",
-			check: false
+			check: false,
+			searchQuery: ''
 		};
 
 
@@ -33,7 +34,18 @@ class Header extends Component {
             });
     }
 
+    queryHandler = (event) => {
 
+        this.setState({searchQuery: event.target.value});
+
+	}
+
+    userQuery = (event) => {
+
+        console.log("dit is de sq: " + this.state.searchQuery);
+        window.location='/search?q=' + this.state.searchQuery;
+
+    }
 
 	render() {
 		return (
@@ -50,9 +62,9 @@ class Header extends Component {
 
 				<div>
                     <div id="search">
-                        <input id="headerSearch" type={"text"} name={"place"} placeholder={' Restaurants in Amsterdam'}  />
-                        <div id="searchIcon">
-                            <NavLink to="/search"><FontAwesomeIcon icon={searchIcon} /></NavLink>
+                        <input id="headerSearch" onChange={this.queryHandler} type={"text"} name={"place"} placeholder={' Restaurants in Amsterdam'}  />
+                        <div id="searchIcon" >
+                            <button id={'searchButton'} value={'bvb'} onClick={this.userQuery}><FontAwesomeIcon icon={searchIcon} /></button>
                         </div>
                     </div>
 				</div>
