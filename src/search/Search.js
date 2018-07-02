@@ -389,7 +389,7 @@ class Search extends Component {
                             {this.state.loading &&
                             <div>
                                 <img src={loader} />
-                                <h2>Please wait, we will load your preferences</h2>
+                                <h2>Please wait, we are searching...</h2>
                             </div>
                             }
                             <ResultList results={this.state.results} results={this.state.results} handlerss={this.modalHandler}/>
