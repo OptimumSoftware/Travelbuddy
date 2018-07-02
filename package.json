@@ -41,6 +41,5 @@
   },
   "watch": {
     "build": "src/"
-  },
-  "proxy": "http://localhost:5000"
+  }
 }

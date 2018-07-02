@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Places.css';
 import places from '../images/placeholder.gif';
+import Config from '../Config';
 
 class Places extends Component {
     constructor(props) {
@@ -31,7 +32,7 @@ class Places extends Component {
 	}
 	
 	newQuery() {
-		let proxy = "https://cors-anywhere.herokuapp.com/";
+		let proxy = Config.proxy;
         let cat = this.props.categories;
         let url = this.props.query + this.radius + this.props.range + this.type + cat + this.apikey;
         fetch(proxy + url)
