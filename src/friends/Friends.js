@@ -36,6 +36,7 @@ class Friends  extends Component {
                             firstname={values[0]}
                             lastname={values[1]}
                             country={values[2]}
+                            username={values[3]}
                             />
                         })}
                     </ul>
@@ -57,6 +58,7 @@ class Friend extends Component {
         return (
           <div className={'friend'}>
               <h4 id={'name'}>{this.props.firstname + " " + this.props.lastname}</h4>
+              <h5 id={'name'}>{this.props.username}</h5>
               <h5 id={'name'}>{this.props.country}</h5>
               <button id={'messageButton'}>Message</button>
               < hr id={'hr'}/>
