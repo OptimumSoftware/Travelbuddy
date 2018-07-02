@@ -30,7 +30,7 @@ class Friends  extends Component {
         render() {
             return (
                 <div>
-                    <ul>
+                    <ul id="friendListResult">
                         {this.state.friendsList.map((values,i) => {
                             return <Friend
                             firstname={values[0]}

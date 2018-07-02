@@ -13,8 +13,7 @@
 }
 
 /* Modal Content/Box */
-.modal-content {
-    background-color: #FFA94D;
+.modalEventContent {
     margin: 1% auto;
     padding: 20px;
     border: 1px solid #888;
@@ -22,7 +21,7 @@
     overflow: hidden;
 	
 	border-radius: 5px;
-	background-color: #FFF;
+	background-color: #FAFAFA;
 }
 
 .close {
@@ -52,14 +51,14 @@
 	margin-bottom: 30px;
 }
 
-#nameLocation {
+#nameEvent {
     left: -10vw;
 	font-weight: bold;
     font-size: 20px;
     margin-top: 12px;
 }
 
-.left {
+.leftEvent {
     width: 50%;
     display: inline-block;
     float: left;
@@ -67,7 +66,7 @@
     margin-top: 3vh;
 }
 
-#right {
+#rightEvent {
     width: 50%;
     display: inline-block;
     float: left;
@@ -112,8 +111,4 @@
 
 #heartIcon {
 	vertical-align: middle;
-}
-
-#nameLocation {
-	
 }

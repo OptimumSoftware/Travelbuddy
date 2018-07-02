@@ -131,6 +131,15 @@ class RegisterForm extends Component {
 					this.setState({
 						message: response.data.message,
 						messageId: "messageOk",
+					}, () => {
+						this.setState({
+							firstName: "",
+							lastName: "",
+							username: "",
+							email: "",
+							password: "",
+							country: ""
+						})
 					});
 				}
 				console.log(this.state.firstname)

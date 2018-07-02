@@ -18,6 +18,7 @@ import EventModal from './modal/EventModal';
 import Map   from './map/Map';
 import Search   from './search/Search.js';
 import Friends from './friends/Friends.js';
+import Config from './Config';
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import faFilter from '@fortawesome/fontawesome-free-solid/faFilter';
@@ -120,7 +121,7 @@ class Home extends Component {
             })
         })
 
-		var proxy  = 'https://cors-anywhere.herokuapp.com/';
+		var proxy  = Config.proxy;
         axios.get('http://api.ipstack.com/check?access_key=201a9fbb71fcb2b3195f6626795b5907')
             .then(response => {
                 this.setState({ continent_name: response.data.continent_name,
@@ -153,7 +154,8 @@ class Home extends Component {
                 var locationURL  =  'https://maps.googleapis.com/maps/api/geocode/json?language=EN&latlng=' + this.state.latitude + ',' + this.state.longitude + '&key=AIzaSyCRNHsASJT7nxChb3zBLeH2hGJdZGMIZGQ'
                 axios.get(locationURL)
                     .then(location => {
-                        this.setState({gpsCity: location.data.results[0].address_components[3].long_name});
+                        let number = location.data.results.length - 2;
+                        this.setState({gpsCity: location.data.results[number].address_components[0].long_name});
                         if (this.state.gpsCity){
                             this.setState({
                                 city: this.state.gpsCity
