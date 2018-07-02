@@ -18,6 +18,7 @@ import EventModal from './modal/EventModal';
 import Map   from './map/Map';
 import Search   from './search/Search.js';
 import Friends from './friends/Friends.js';
+import Config from './Config';
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import faFilter from '@fortawesome/fontawesome-free-solid/faFilter';
@@ -120,7 +121,7 @@ class Home extends Component {
             })
         })
 
-		var proxy  = 'https://cors-anywhere.herokuapp.com/';
+		var proxy  = Config.proxy;
         axios.get('http://api.ipstack.com/check?access_key=201a9fbb71fcb2b3195f6626795b5907')
             .then(response => {
                 this.setState({ continent_name: response.data.continent_name,

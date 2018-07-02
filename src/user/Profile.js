@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom'
 import Modal   from '../modal/Modal';
 import EventModal from '../modal/EventModal';
 import Gravatar from 'react-gravatar'
+import Config from '../Config';
 
 import solidStar from '@fortawesome/fontawesome-free-solid/faStar'
 import regularStar from '@fortawesome/fontawesome-free-regular/faStar'
@@ -193,8 +194,9 @@ class Favorites extends Component {
 		this.url = "/api/user/favorite";
 		this.placeDetailsUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=";
 		this.proxyUrl = "https://cors-anywhere.herokuapp.com/";
+		this.proxyUrl = Config.proxy;
 		this.imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxheight=234&maxwidth=280&photoreference=";
-		this.key = "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E";
+		this.key = "&key=" + Config.googKey
 
 		this.loadData();
 	}
@@ -222,6 +224,7 @@ class Favorites extends Component {
 					if(favorite.placeId) {
 						axios.get(this.proxyUrl + this.placeDetailsUrl + favorite.placeId + this.key)
 							.then(response => {
+									console.log(response)
 									var temp1 = this.state.placeDetails;
 									temp1[favorite.placeId] = response.data;
 									this.setState({
@@ -497,7 +500,7 @@ class ResultList extends Component {
 	}
 
     loadData() {
-            const url = "http://localhost:5000/api/user/preferences";
+            const url = "/api/user/preferences";
             axios.get(url)
                 .then(response => {
                     let temp = [];

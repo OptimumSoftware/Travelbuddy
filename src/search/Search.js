@@ -8,6 +8,7 @@ import RadiusFilter from './RadiusFilter.js';
 import Modal   from '../modal/Modal';
 import PlacesAutocomplete from 'react-places-autocomplete';
 import { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
+import Config from '../Config';
 
 class Search extends Component {
     constructor(props) {
@@ -43,8 +44,8 @@ class Search extends Component {
 
     }
 
-    apikey = "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E";
-    proxy ="https://cors-anywhere.herokuapp.com/";
+    apikey = "&key=" + Config.googKey;
+    proxy = Config.proxy;
 
     componentDidMount() {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -210,7 +211,7 @@ class Search extends Component {
                 })
                 let specLocation = this.state.locationLat + "," + this.state.locationLng
                 let url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + specLocation
-                    + distance + type + open + "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E";
+                    + distance + type + open + "&key=" + Config.googKey;
                 fetch(this.proxy + url)
                     .then(response => response.json())
                     .then(result => {
