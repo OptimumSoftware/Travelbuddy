@@ -9,9 +9,15 @@ class Footer extends Component {
 	render() {
 		return (
 			<footer>
-				<img id="icon" src={facebookIcon} alt="facebookIcon" />
-				<img id="icon" src={twitterIcon} alt="twitterIcon" />
-				<img id="icon" src={linkedIcon} alt="linkedIcon" />
+				<a href="https://www.facebook.com">
+                <img id="icon" src={facebookIcon} alt="facebookIcon" />
+                </a>
+                <a href="https://www.twitter.com">
+                    <img id="icon" src={twitterIcon} alt="twitterIcon" />
+                </a>
+                <a href="https://www.linkedin.com">
+                    <img id="icon" src={linkedIcon} alt="linkedIcon" />
+                </a>
 			</footer>
 		);
 	}

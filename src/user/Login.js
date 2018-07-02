@@ -108,14 +108,15 @@ class RegisterForm extends Component {
 
 		axios.get("/api/countries")
 				.then(response => {
-					this.setState({countries: response.data});
+					this.setState({
+						countries: response.data});
 				})
 
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	register() {
+	register = () => {
 		let url = '/register';
 		url += "?firstName=" + this.state.firstname;
 		url += "&lastName=" + this.state.lastname;
@@ -132,6 +133,7 @@ class RegisterForm extends Component {
 						messageId: "messageOk",
 					});
 				}
+				console.log(this.state.firstname)
 			})
 			.catch(error => {
 				this.setState({
@@ -156,16 +158,16 @@ class RegisterForm extends Component {
 						<div>
 
                             <label>Username</label>
-                            <input type="text" name="username" value={this.state.username} onChange={this.handleInputChange} placeholder="eg., johndoe54" maxlength="64" required />
+                            <input type="text" name="username" value={this.state.username} onChange={this.handleInputChange} placeholder="eg., johndoe54" maxLength="64" required />
 
                             <label>Email address</label>
-							<input type="text" name="email" value={this.state.email} onChange={this.handleInputChange} placeholder="eg., johndoe@gmail.com" maxlength="64" required />
+							<input type="text" name="email" value={this.state.email} onChange={this.handleInputChange} placeholder="eg., johndoe@gmail.com" maxLength="64" required />
 
 							<label>First Name</label>
-							<input type="text" name="firstname" value={this.state.firstname} onChange={this.handleInputChange} placeholder="eg., John" maxlength="64" required />
+							<input type="text" name="firstname" value={this.state.firstname} onChange={this.handleInputChange} placeholder="eg., John" maxLength="64" required />
 
 							<label>Last Name</label>
-							<input type="text" name="lastname" value={this.state.lastname} onChange={this.handleInputChange} placeholder="eg., Doe" maxlength="64" required />
+							<input type="text" name="lastname" value={this.state.lastname} onChange={this.handleInputChange} placeholder="eg., Doe" maxLength="64" required />
 
 							<label>Password</label>
                             <input type="password" name="password" value={this.state.password} onChange={this.handleInputChange} placeholder="eg., •••••••" maxlength="64" required />

@@ -742,12 +742,12 @@ class Settings extends Component {
 				<div className="settingsRow">
 					<div className="settingsBlock">
 						<label>First name</label>
-						<input type="text" name="firstName" value={this.state.firstName} onChange={this.handleInputChange} maxlength="64" required />
+						<input type="text" name="firstName" value={this.state.firstName} onChange={this.handleInputChange} maxLength="64" required />
 					</div>
 					
 					<div className="settingsBlock">
 						<label>Last name</label>
-						<input type="text" name="lastName" value={this.state.lastName} onChange={this.handleInputChange} maxlength="64" required />
+						<input type="text" name="lastName" value={this.state.lastName} onChange={this.handleInputChange} maxLength="64" required />
 					</div>
 				</div>
 				
@@ -767,7 +767,7 @@ class Settings extends Component {
 				<div className="settingsRow">
 					<div className="settingsBlock">
 						<label>New password</label>
-						<input type="password" name="password" value={this.state.password} placeholder="Enter new password" onChange={this.handleInputChange} maxlength="64" />
+						<input type="password" name="password" value={this.state.password} placeholder="Enter new password" onChange={this.handleInputChange} maxLength="64" />
 					</div>
 				</div>
 				
