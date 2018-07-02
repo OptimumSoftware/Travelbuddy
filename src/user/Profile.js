@@ -221,7 +221,7 @@ class Favorites extends Component {
 				this.state.items.forEach(favorite => {
 					if(favorite.placeId) {
 						axios.get(this.proxyUrl + this.placeDetailsUrl + favorite.placeId + this.key)
-								.then(response => {
+							.then(response => {
 									var temp1 = this.state.placeDetails;
 									temp1[favorite.placeId] = response.data;
 									this.setState({
