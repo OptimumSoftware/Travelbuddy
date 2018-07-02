@@ -157,7 +157,12 @@ class EditEvent extends Component {
 	 }
 	  
 	
-	render() {		
+	render() {
+		let message = this.state.message;
+		if(message) {
+			message = message.replace(/<br\s*[\/]?>/gi, "\n");
+		}		
+		
 		return (
 			<main>
 				<h1>Edit event</h1>
@@ -257,7 +262,7 @@ class EditEvent extends Component {
 							<button onClick={() => this.editEvent()}>Save</button>
 						</div>
 						
-						<div className="messageGeneral" id={this.state.messageId}>{this.state.message}</div>
+						<div className="messageGeneral" id={this.state.messageId}>{message}</div>
 					</div>
 				</div>
 			</main>

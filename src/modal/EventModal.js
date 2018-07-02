@@ -35,15 +35,15 @@ class EventModal extends Component {
 				{console.log("test")}
                 {console.log("Modal image: " + this.props.image)}
                 {console.log("Modal address: " + this.props.address)}
-                <div className="modal-content">
+                <div className="modalEventContent">
 					<span id={'close'} onClick={this.props.click} className="close">&times;</span>
 					<div id="topWrapper">
-						<div className={'left'}>
+						<div className={'leftEvent'}>
 							<img className={'modalImage'} src={this.props.image} onClick={this.props.click} alt="gfd" />
 						</div>
-						<div id={'right'}>
+						<div id={'rightEvent'}>
 							<div className={'textLocation'}>
-								<p id={'nameLocation'}>{this.props.name}</p>
+								<p id={'nameEvent'}>{this.props.name}</p>
 								<p id='eventDesc'>{this.props.description}</p>
 								<p>Start: {this.props.startDate} - {this.props.startTime}</p>
 								<p>End: {this.props.endDate} - {this.props.endTime}</p>

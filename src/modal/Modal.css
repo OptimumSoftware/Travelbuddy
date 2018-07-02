@@ -14,12 +14,14 @@
 
 /* Modal Content/Box */
 .modal-content {
-    background-color: #FFA94D;
     margin: 1% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 50%;
+    width: 51%;
     overflow: hidden;
+	
+	border-radius: 5px;
+	background-color: #FAFAFA;
 }
 
 .close {
@@ -36,18 +38,26 @@
 }
 
 #nameLocation {
-    left: -10vw;
+	padding: 0 11px 0 0px;
+	left: -10vw;
+	font-weight: bold;
+    font-size: 20px;
+    margin-top: 12px;
 }
 
 .left {
-    width: 50%;
+    width: 47%;
+	vertical-align: top;
     display: inline-block;
     float: left;
     margin-top: 6.5vh;
 }
 
 #right {
-    width: 50%;
+	width: 49%;
+    border-left: 1px solid #d6d6d6;
+    height: 100%;
+    padding-left: 26px;
     display: inline-block;
     float: left;
 }

@@ -154,7 +154,8 @@ class Home extends Component {
                 var locationURL  =  'https://maps.googleapis.com/maps/api/geocode/json?language=EN&latlng=' + this.state.latitude + ',' + this.state.longitude + '&key=AIzaSyCRNHsASJT7nxChb3zBLeH2hGJdZGMIZGQ'
                 axios.get(locationURL)
                     .then(location => {
-                        this.setState({gpsCity: location.data.results[0].address_components[3].long_name});
+                        let number = location.data.results.length - 2;
+                        this.setState({gpsCity: location.data.results[number].address_components[0].long_name});
                         if (this.state.gpsCity){
                             this.setState({
                                 city: this.state.gpsCity
