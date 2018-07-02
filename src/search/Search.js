@@ -32,12 +32,15 @@ class Search extends Component {
             firstPage: false,
             savedQuery: "",
             checkPage: 0,
-            loadGoogleLib: false
+            loadGoogleLib: false,
+            boolTest: false
         };
 
         this.getCategories()
         this.handleAddressChange = this.handleAddressChange.bind(this);
         this.handleAddressSelect = this.handleAddressSelect.bind(this);
+
+
     }
 
     apikey = "&key=AIzaSyDA8JeZ3hy9n1XHBBuq6ke8M9BfiACME_E";
@@ -56,14 +59,18 @@ class Search extends Component {
 	redirectedSearch() {
         let sq = window.location.search;
         sq = sq.substring(3)
+        sq = sq.replace(/[^a-zA-Z]/g, ' ');
+        sq = sq.replace(/  +/g, ' ');
         if (sq.length > 0) {
 			this.setState({
 				input: sq,
-				searchType: "keyword"
-			})
+				searchType: "keyword",
+                boolTest: true
+			}, () => {
+                this.checkSearch()
+            });
 			document.getElementById("typeSearch").value = "keyword";
 
-			{/*this.searchByKeyword()*/}
         }else {
             console.log("lege qs")
         }
@@ -117,8 +124,9 @@ class Search extends Component {
 
     }
 
-    searchByKeyword = (e) => {
+    searchByKeyword = () => {
         let keyword = this.state.input.split(' ').join('+');
+        console.log(keyword)
         let url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + keyword +
             this.apikey;
         fetch(this.proxy + url)
@@ -183,7 +191,7 @@ class Search extends Component {
             });
     }
 
-    searchByPlace = (e) => {
+    searchByPlace = () => {
         let keyword = this.state.input.split(' ').join('+');
         let location = "https://maps.googleapis.com/maps/api/geocode/json?address=" + keyword + this.apikey;
         let distance = "&radius=" + this.state.radius;
@@ -229,11 +237,11 @@ class Search extends Component {
     }
 
 
-    checkSearch = (e) => {
+    checkSearch = () => {
         if (this.state.searchType == "city") {
-            this.searchByPlace(e)
+            this.searchByPlace()
         } else {
-            this.searchByKeyword(e)
+            this.searchByKeyword()
         }
     }
 
@@ -299,7 +307,7 @@ class Search extends Component {
             <div className={"data"}>
                 <div className={"searchHeader"}>
                     <div className={"col-12 search"}>
-                        <h3>Search TravelBuddy {this.state.input}</h3>
+                        <h3>Search TravelBuddy  </h3>
                         <select onChange={this.setSearch} className='search-select' id='typeSearch'>
                             <option value="city" >City search</option>
                             <option value="keyword" >Keyword search</option>
