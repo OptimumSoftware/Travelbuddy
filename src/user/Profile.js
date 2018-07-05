@@ -314,7 +314,7 @@ class Favorites extends Component {
 		let place = require("../images/placeholder-favorite.png");
 		return (
 			<div id="favorites">
-				<h2>Your favorite places</h2>
+				<h2>Your favorites</h2>
 				<div id="favoritesWrapper">
 					{
 						this.state.items && this.state.items.length ?
