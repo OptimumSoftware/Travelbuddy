@@ -26,31 +26,31 @@ class LoginForm extends Component {
 			password: "",
             status: true,
 			message:''
-		}
+		};
 
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-    loginCheck = (event) => {
-		const url = '/login?email=' + this.state.email + '&password=' + this.state.password
+    loginCheck = () => {
+		const url = '/login?email=' + this.state.email + '&password=' + this.state.password;
         axios.post(url)
-			.then((result) =>{
+			.then(() =>{
                     this.setState({
 						status: true
-                    })
+                    });
 
                     window.location='/profile'
             })
-			.catch(erros => {
+			.catch(errors => {
                 this.setState({
 					status: false,
 					email: '',
 					password: ''
                 })
 			})
-        console.log('de status is ' + this.state.status)
-    }
+
+    };
 
 	render() {
 
@@ -88,7 +88,6 @@ class LoginForm extends Component {
 	}
 
 	handleSubmit(event) {
-		// alert("Logged in! " + this.state.email + ": " + this.state.password);
 	}
 }
 
@@ -104,13 +103,13 @@ class RegisterForm extends Component {
 			password: "",
 			country: "",
 			countries: []
-		}
+		};
 
 		axios.get("/api/countries")
 				.then(response => {
 					this.setState({
 						countries: response.data});
-				})
+				});
 
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -142,7 +141,6 @@ class RegisterForm extends Component {
 						})
 					});
 				}
-				console.log(this.state.firstname)
 			})
 			.catch(error => {
 				this.setState({
@@ -150,7 +148,7 @@ class RegisterForm extends Component {
 					messageId: "messageError",
 				});
 			});
-	}
+	};
 
 	render() {
         const isEnabled =
@@ -196,12 +194,6 @@ class RegisterForm extends Component {
 		);
 	}
 
-    handleClick = () => {
-        this.setState({
-            show: !this.state.show
-        });
-    }
-
 
 
 	handleInputChange(event) {
@@ -213,7 +205,7 @@ class RegisterForm extends Component {
 		});
 	}
 
-	handleSubmit(event) {
+	handleSubmit() {
 		alert("Register successful! " + this.state.email + ": " + this.state.password);
 	}
 }

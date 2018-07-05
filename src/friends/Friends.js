@@ -5,33 +5,26 @@ import axios from "axios/index";
 class Friends  extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             friendsList: []
-        }
+        };
 
-        const url = "/api/user/friends"
+        const url = "/api/user/friends";
         axios.get(url)
             .then(response => {
                 this.setState({
                     friendsList: response.data.friends
                 })
-                console.log(this.state.friendsList)
             });
     }
 
-    createContent = () => {
-        for(let index = 0; index < this.state.friendsList.length;index++){
-            return this.state.friendsList[index]
-        }
-
-    }
         render() {
             return (
                 <div>
                     <ul id="friendListResult">
-                        {this.state.friendsList.map((values,i) => {
+                        {this.state.friendsList.map((values) => {
                             return <Friend
                             firstname={values[0]}
                             lastname={values[1]}

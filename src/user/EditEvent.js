@@ -6,7 +6,7 @@ import URL from 'url-parse';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import fileIcon from '@fortawesome/fontawesome-free-regular/faFile';
 import PlacesAutocomplete from 'react-places-autocomplete';
-import { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
+import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 class EditEvent extends Component {
 	constructor(props) {
@@ -31,7 +31,7 @@ class EditEvent extends Component {
 			lng: 0,
 			message: null,
 			messageId: null,
-		}
+		};
 		
 		const url = "/api/loginCheck";	
 		axios.get(url)
@@ -45,7 +45,7 @@ class EditEvent extends Component {
 				}
 			})
 			.then(() => {
-				var currentUrl = new URL(window.location.href, true)
+				let currentUrl = new URL(window.location.href, true);
 				if(currentUrl.query.id) {
 					this.setState({
 						eventId: currentUrl.query.id
@@ -81,7 +81,7 @@ class EditEvent extends Component {
 							jsonCategories: response
 						});
 						let temp = [];
-						for(var key in response) {
+						for(let key in response) {
 							temp.push(key)
 						}
 						this.setState({
@@ -103,7 +103,7 @@ class EditEvent extends Component {
 	handleAddressSelect(location) {
 		geocodeByAddress(location)
 			.then(results => {
-				this.setState({location: results[0]['formatted_address']})
+				this.setState({location: results[0]['formatted_address']});
 				return getLatLng(results[0])
 			})
 			.then(({ lat, lng }) => {
@@ -116,10 +116,9 @@ class EditEvent extends Component {
 	  }
 	  
 	 editEvent() {
-		  var formData = new FormData();
-		  var image = document.getElementById("fileUpload");
+		  let formData = new FormData();
+		  let image = document.getElementById("fileUpload");
 		  if(image.value != "") {
-			  console.log("image");
 			  formData.append("image", image.files[0])
 		  }
 		  
@@ -174,15 +173,6 @@ class EditEvent extends Component {
 								<label className="editEventLabel">Event name</label>
 								<input type="text" name="name" value={this.state.name} onChange={this.handleInputChange} maxlength="128" required />
 							</div>
-
-							{/*<div className="editEventItem">
-								<label className="editEventLabel">Category</label>
-								<select name="category" value={this.state.category} onChange={this.handleInputChange} required >
-									{this.state.categories.map((item) => (
-										<option value={this.state.jsonCategories[item]}>{item.split('_').join(' ')}</option>
-									))}
-								</select>
-							</div>*/}
 						</div>
 						
 						<div className="editEventRow">

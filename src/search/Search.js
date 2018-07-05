@@ -7,7 +7,7 @@ import CategoryList from './CategoryList.js';
 import RadiusFilter from './RadiusFilter.js';
 import Modal   from '../modal/Modal';
 import PlacesAutocomplete from 'react-places-autocomplete';
-import { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
+import { geocodeByAddress } from 'react-places-autocomplete';
 import Config from '../Config';
 
 class Search extends Component {
@@ -37,7 +37,7 @@ class Search extends Component {
             boolTest: false
         };
 
-        this.getCategories()
+        this.getCategories();
         this.handleAddressChange = this.handleAddressChange.bind(this);
         this.handleAddressSelect = this.handleAddressSelect.bind(this);
 
@@ -53,13 +53,13 @@ class Search extends Component {
                 currentLat: position.coords.latitude,
                 currentLng: position.coords.longitude
             })
-        })
+        });
 		this.redirectedSearch();
     }
 
 	redirectedSearch() {
         let sq = window.location.search;
-        sq = sq.substring(3)
+        sq = sq.substring(3);
         sq = sq.replace(/[^a-zA-Z]/g, ' ');
         sq = sq.replace(/  +/g, ' ');
         if (sq.length > 0) {
@@ -73,7 +73,6 @@ class Search extends Component {
 			document.getElementById("typeSearch").value = "keyword";
 
         }else {
-            console.log("lege qs")
         }
     }
 
@@ -81,13 +80,6 @@ class Search extends Component {
         this.setState({
             input: e.target.value,
         })
-    }
-
-
-    handleClick = () => {
-        this.setState({
-            show: !this.state.show
-        });
     };
 
 
@@ -102,7 +94,7 @@ class Search extends Component {
             modalLng: lng,
             modalId: id,
         })
-    }
+    };
 
     hideModal = () => {
         this.setState({showModal: false})
@@ -111,10 +103,10 @@ class Search extends Component {
     getCategories() {
         axios.get('/api/categories')
             .then(result => {
-                let temp = []
+                let temp = [];
                 this.setState({
                     jsonCategories: result.data
-                })
+                });
                 for (let key in this.state.jsonCategories) {
                     temp.push(key)
                 }
@@ -127,7 +119,6 @@ class Search extends Component {
 
     searchByKeyword = () => {
         let keyword = this.state.input.split(' ').join('+');
-        console.log(keyword)
         let url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + keyword +
             this.apikey;
         fetch(this.proxy + url)
@@ -139,14 +130,13 @@ class Search extends Component {
                     middlePage: result.next_page_token,
                     savedQuery: url
                 });
-                console.log(this.state.results)
             });
-    }
+    };
 
-    getPrevPage = (e) => {
+    getPrevPage = () => {
         this.setState({
             checkPage: this.state.checkPage - 1
-        })
+        });
         let url;
         if (this.state.firstPage) {
             url = this.state.savedQuery;
@@ -161,11 +151,10 @@ class Search extends Component {
                     nextPage: result.next_page_token,
                     firstPage: true,
                 });
-                console.log(this.state.results)
             });
-    }
+    };
 
-    getNextPage = (e) => {
+    getNextPage = () => {
         if (this.state.checkPage <= 0) {
             this.setState({
                 firstPage: true,
@@ -179,7 +168,7 @@ class Search extends Component {
         }
         this.setState({
             prevPage: this.state.nextPage,
-        })
+        });
         let url = this.state.savedQuery + "&pagetoken=" + this.state.nextPage;
         fetch(this.proxy + url)
             .then(response => response.json())
@@ -188,9 +177,8 @@ class Search extends Component {
                     results: result.results,
                     nextPage: result.next_page_token,
                 });
-                console.log(this.state.results)
             });
-    }
+    };
 
     searchByPlace = () => {
         let keyword = this.state.input.split(' ').join('+');
@@ -201,15 +189,15 @@ class Search extends Component {
         this.setState({
             loading: "loading",
             results: []
-        })
+        });
         fetch(location)
             .then(response => response.json())
             .then(result => {
                 this.setState({
                     locationLng: result.results[0].geometry.location.lng,
                     locationLat: result.results[0].geometry.location.lat
-                })
-                let specLocation = this.state.locationLat + "," + this.state.locationLng
+                });
+                let specLocation = this.state.locationLat + "," + this.state.locationLng;
                 let url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + specLocation
                     + distance + type + open + "&key=" + Config.googKey;
                 fetch(this.proxy + url)
@@ -217,25 +205,24 @@ class Search extends Component {
                     .then(result => {
                         this.setState({
                             loading: ""
-                        })
+                        });
                         this.setState({
                             results: result.results,
                             nextPage: result.next_page_token,
                             middlePage: result.next_page_token,
                             savedQuery: url
                         });
-                        console.log(this.state.results)
                     });
             });
 
 
-    }
+    };
 
     setSearch = (e) => {
         this.setState({
             searchType: e.target.value
         })
-    }
+    };
 
 
     checkSearch = () => {
@@ -244,15 +231,15 @@ class Search extends Component {
         } else {
             this.searchByKeyword()
         }
-    }
+    };
 
     changeType = (e) => {
         this.setState({
             type: e.target.value
         })
-    }
+    };
 
-    changeOpen = (e) => {
+    changeOpen = () => {
         if (this.state.openNow == false) {
             this.setState({
                 openNow: true,
@@ -264,13 +251,13 @@ class Search extends Component {
                 open: ""
             })
         }
-    }
+    };
 
     changeRadius = (e) => {
         this.setState({
             radius: e.target.value
         })
-    }
+    };
 
     handleAddressChange(input) {
         this.setState({ input })
