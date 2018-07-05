@@ -38,7 +38,6 @@ class Places extends Component {
         fetch(proxy + url)
             .then(response => response.json())
             .then(resultPlaces => {
-                console.log(resultPlaces);
                 this.setState({
                     results: resultPlaces.results
                 })
@@ -82,7 +81,7 @@ class Places extends Component {
             </div>)
         }
         return content
-    }
+    };
 
     render() {
         return (

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import './Profile.css';
-import logo1 from '../images/4.jpg';
-import logo2 from '../images/3.jpg';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import xIcon from '@fortawesome/fontawesome-free-solid/faTimes';
 import deleteIcon from '@fortawesome/fontawesome-free-regular/faTimesCircle';
@@ -15,8 +13,6 @@ import EventModal from '../modal/EventModal';
 import Gravatar from 'react-gravatar'
 import Config from '../Config';
 
-import solidStar from '@fortawesome/fontawesome-free-solid/faStar'
-import regularStar from '@fortawesome/fontawesome-free-regular/faStar'
 import plusSquare from '@fortawesome/fontawesome-free-regular/faPlusSquare'
 import minusSquare from '@fortawesome/fontawesome-free-regular/faMinusSquare'
 
@@ -29,7 +25,7 @@ class Profile extends Component {
 			country: "",
 			userId: null,
 			userEvents: []
-		}
+		};
 		
 		const url = "/api/loginCheck";	
 		axios.get(url)
@@ -41,10 +37,10 @@ class Profile extends Component {
 						loggedIn: true
 					});
 				}
-			})
+			});
 
 
-		const grav = "/api/loginName"
+		const grav = "/api/loginName";
         axios.get(grav)
             .then(response => {
 				this.setState(
@@ -115,7 +111,7 @@ class UserEvents extends Component {
 			userEvents: [],
 			message: null,
 			messageId: null,
-		}
+		};
 		
 		axios.get("/api/user/getEvents")
 			.then(response => {
@@ -157,7 +153,7 @@ class UserEvents extends Component {
 						this.state.userEvents && this.state.userEvents.length ? (
 							<div id="userEventList">
 								{this.state.userEvents.map((event, index) => {
-									const url = "/editEvent?id=" + event.id
+									const url = "/editEvent?id=" + event.id;
 									return (
 										<div id="userEvent">
 											<a href={url}><FontAwesomeIcon icon={editIcon} id="editIcon"/></a>
@@ -182,20 +178,20 @@ class UserEvents extends Component {
 class Favorites extends Component {
 
 	constructor(props) {
-		super(props)
+		super(props);
 
         this.state = {
 			items: [],
 			placeDetails: {},
 			check: false,
 			photos: [],
-        }
+        };
 		
 		this.url = "/api/user/favorite";
 		this.placeDetailsUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=";
 		this.proxyUrl = Config.proxy;
 		this.imgUrl = "https://maps.googleapis.com/maps/api/place/photo?maxheight=234&maxwidth=280&photoreference=";
-		this.key = "&key=" + Config.googKey
+		this.key = "&key=" + Config.googKey;
 
 		this.loadData();
 	}
@@ -223,8 +219,7 @@ class Favorites extends Component {
 					if(favorite.placeId) {
 						axios.get(this.proxyUrl + this.placeDetailsUrl + favorite.placeId + this.key)
 							.then(response => {
-									console.log(response)
-									var temp1 = this.state.placeDetails;
+									let temp1 = this.state.placeDetails;
 									temp1[favorite.placeId] = response.data;
 									this.setState({
 										placeDetails: temp1
@@ -234,11 +229,11 @@ class Favorites extends Component {
 				})
 
 			})
-			.then(() => {console.log(this.state.placeDetails)})
+			.then(() => {})
 	}
 
     removeFavorite(index, id) {
-		axios.delete(this.url + "?id=" + id)
+		axios.delete(this.url + "?id=" + id);
         let array = this.state.items;
         array.splice(index, 1);
         this.setState({
@@ -257,7 +252,7 @@ class Favorites extends Component {
             modalLng: lng,
             modalId: id,
         })
-    }
+    };
 	
 	eventModalHandler = (name, image, address, description, startDate, startTime, endDate, endTime, id, lat, lng) => {
 		this.setState({
@@ -274,7 +269,7 @@ class Favorites extends Component {
 			modalLat: lat,
 			modalLng: lng
 		})
-	}
+	};
 	
 	hideModal = () => {
         this.setState({showModal: false, showEventModal: false})
@@ -316,7 +311,7 @@ class Favorites extends Component {
                 currentLng = {this.state.currentLng}
             />
 		}
-		let place = require("../images/placeholder-favorite.png")
+		let place = require("../images/placeholder-favorite.png");
 		return (
 			<div id="favorites">
 				<h2>Your favorite places</h2>
@@ -324,7 +319,7 @@ class Favorites extends Component {
 					{
 						this.state.items && this.state.items.length ?
 							this.state.items.map((item, index) => {
-								let img = place
+								let img = place;
 								if(item.type === "place") {
 									if(item.placeId in this.state.placeDetails) {
 										const place = this.state.placeDetails[item.placeId]['result'];
@@ -416,7 +411,7 @@ class Preferences extends Component {
 			categories: [],
 			results: [],
 			searchBar: ""
-		}
+		};
 		
 		this.emptySearch = this.emptySearch.bind(this);
 		this.handleChange = this.handleChange.bind(this);
@@ -426,9 +421,9 @@ class Preferences extends Component {
 				let temp = [];
 				this.setState({
 					jsonCategories: result.data
-				})
+				});
 					
-				for (var key in this.state.jsonCategories) {
+				for (let key in this.state.jsonCategories) {
 					temp.push(key)
 				}
 				this.setState({
@@ -445,7 +440,7 @@ class Preferences extends Component {
 			[field]: value
 		});
 		
-		let length = e.target.value.length
+		let length = e.target.value.length;
 		let result = [];
         for (let i = 0; i < this.state.categories.length; i++) {
         	let word = this.state.categories[i];
@@ -491,7 +486,7 @@ class ResultList extends Component {
 		
 		this.state = {
 			preferences: [],
-		}
+		};
 		
 		this.addPreference = this.addPreference.bind(this);
 		this.removePreference = this.removePreference.bind(this);
@@ -503,7 +498,7 @@ class ResultList extends Component {
             axios.get(url)
                 .then(response => {
                     let temp = [];
-                    for (var key in response.data) {
+                    for (let key in response.data) {
                         temp.push(key)
                     }
                     this.setState({
@@ -515,28 +510,28 @@ class ResultList extends Component {
     }
 
     addPreference(i, result) {
-		let pref = []
+		let pref = [];
 		let check = 0;
 		for (let index = 0; index < this.state.preferences.length; index++) {
-			pref.push(this.state.preferences[index])
+			pref.push(this.state.preferences[index]);
 			if (this.state.preferences[index] == result) {
 				check++;
 			}
 		}
-		pref.push(result)
+		pref.push(result);
 		if (check == 0) {
-			const url = "/api/user/preferences?id=" +  i
+			const url = "/api/user/preferences?id=" +  i;
 			axios.post(url)
 			this.setState({
 				preferences: pref
-			})
+			});
 			this.props.emptySearch();
 		}
 	}
 
     removePreference(index, name, i) {
-		const url = "/api/user/preferences?id=" +  i
-		axios.delete(url)
+		const url = "/api/user/preferences?id=" +  i;
+		axios.delete(url);
 		let array = this.state.preferences;
 		array.splice(index, 1);
 		this.setState({
@@ -585,16 +580,15 @@ class FriendsOverview extends Component {
             results: [],
             searchBar: "failed",
             status: []
-        }
+        };
 
 
         axios.get('/api/userList')
             .then(result => {
                 let temp = [];
-                console.log(temp)
                 this.setState({
                     jsonCategories: result.data.users
-                })
+                });
 
                 {this.state.jsonCategories.map((values) => {
                     temp.push(values[0])
@@ -603,7 +597,6 @@ class FriendsOverview extends Component {
                 this.setState({
                     userList: temp
                 })
-                console.log("de userlist" + this.state.userList)
             });
 
 
@@ -616,32 +609,30 @@ class FriendsOverview extends Component {
             {name: event.target.value}
         )
 
-    }
+    };
 
-    deleteFriend = (event) => {
+    deleteFriend = () => {
         const url = '/api/user/friends/' + this.state.name;
         axios.delete(url).then((result) => {
             this.setState({
                 status: result.data.deleteStatus,
                 name: ''
             })
-            console.log("resultaat van delete " + this.state.status)
-        })
-    }
 
-    addFriend = (event) => {
+        })
+    };
+
+    addFriend = () => {
         const url = '/api/user/friends?friend=' + this.state.name;
         axios.post(url).then((result) => {
             this.setState({
                 status: result.data.addfriend,
                 name: ''
             })
-            console.log("vriend toevoegen " + this.state.status)
         })
-    }
+    };
 
     render() {
-        const url = '/api/user/friends';
         return (
             <div className={'friends'}>
                 <h2 id={'friendsTag'}>Friends</h2>
@@ -676,7 +667,7 @@ class Settings extends Component {
 			countries: [],
 			message: null,
 			messageId: null,
-		}
+		};
 		
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.loadData();

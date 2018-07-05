@@ -30,7 +30,6 @@ class Modal extends Component {
     }
 
     render() {
-		console.log(this.props.open)
 		let open = "No opening hours available";
 		if(this.props.open === false) {
 			open = "Closed"
@@ -42,8 +41,6 @@ class Modal extends Component {
         return(
 
             <div id="myModal" className="modal">
-                {console.log("Modal image: " + this.props.image)}
-                {console.log("Modal address: " + this.props.address)}
                 <div className="modal-content">
                     <span id={'close'} onClick={this.props.click} className="close">&times;</span>
                     <div className={'left'}>
@@ -80,17 +77,16 @@ class Modal extends Component {
         )
     }
 	
-	vote(event) {
+	vote() {
 		if(this.state.loggedIn) {
 			if(this.state.voted) {
 				axios.delete(this.state.url + this.state.placeId)
 				.then(response => {
 					if(response.data['likes'] == "Error") {
-						console.log("Likes Error 1")
 					} else {
 						this.setState({
 							voteCount: response.data['likes']
-						})
+						});
 						document.getElementById("voteIcon").style.color = "#000";
 					}		
 				});  
@@ -99,7 +95,6 @@ class Modal extends Component {
 				axios.post(this.state.url + this.state.placeId)
 				.then(response => {
 					if(response.data['likes'] == "Error") {
-						console.log("Likes Error 2");
 					} else {
 						this.setState({
 							voteCount: response.data['likes']
@@ -114,11 +109,11 @@ class Modal extends Component {
 		}
 	}
 	
-	favoriteHandler(event) {
+	favoriteHandler() {
 		if(this.state.loggedIn) {
 			if(this.state.favoriteCheck) {
 				const url = "/api/user/favorite" + "?id=" + this.props.id;
-				axios.delete(url)
+				axios.delete(url);
 				document.getElementById("heartIcon").style.color = "#000";
 				this.setState({
 					favoriteText: "Add favorite"
@@ -126,7 +121,7 @@ class Modal extends Component {
 			}
 			else {
 				const url = "/api/user/favorite" + "?placeId=" + this.props.id + "&type=place";
-				axios.post(url)
+				axios.post(url);
 				document.getElementById("heartIcon").style.color = "red";
 				this.setState({
 					favoriteText: "Delete favorite"
@@ -143,14 +138,12 @@ class Modal extends Component {
 			axios.get("/api/user/checkFavorite" + "?id=" + this.props.id)
 				.then(response => {
 					document.getElementById("heartIcon").style.color = "#000";
-					console.log("Not liked yet")
 					this.setState({
 						favoriteText: "Add favorite"
 					})
 				})
 				.catch(error => {
 					document.getElementById("heartIcon").style.color = "red";
-					console.log("Already liked")
 					this.setState({
 						favoriteCheck: true,
 						favoriteText: "Delete favorite"
@@ -172,7 +165,6 @@ class Modal extends Component {
 			axios.get(url)
 				.then(response => {
 					if(response.data == "Error") {
-						console.log("Check Liked Error");
 					} 
 					else if(response.data['check']) {
 						this.setState({
@@ -193,7 +185,6 @@ class Modal extends Component {
 			.then(response => {
 				if(response.data['username']) {
 					const usr = response.data['username'];
-					console.log(usr);
 					this.setState({
 						loggedIn: true,
 						userId: usr

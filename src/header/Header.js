@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { 
 	NavLink,
-	BrowserRouter
 } from 'react-router-dom';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import userIcon from '@fortawesome/fontawesome-free-solid/faCaretDown'
@@ -26,7 +25,7 @@ class Header extends Component {
 
 
 
-        const userURL = "/api/loginName"
+        const userURL = "/api/loginName";
 
         axios.get(userURL)
             .then(response => {
@@ -38,20 +37,16 @@ class Header extends Component {
 
         this.setState({searchQuery: event.target.value});
 
-	}
+	};
 
-    userQuery = (event) => {
-
-        console.log("dit is de sq: " + this.state.searchQuery);
+    userQuery = () => {
         window.location='/search?q=' + this.state.searchQuery;
-
-    }
+    };
 
 	render() {
 		return (
 			<header>
 				<Gravatar id={'avatar'} email={this.state.avatar} size={27} />
-                {/*<img  id={'avatar'} src={this.state.avatar} alt="avatar"/>*/}
 				<div id='topBar'>
                     < DropDown  />
 
@@ -82,7 +77,7 @@ class DropDown extends Component {
 
 		this.state = {
 			showDropDown: false,
-		}
+		};
 		
 		this.toggleMenu = this.toggleMenu.bind(this);
 	}
@@ -121,12 +116,12 @@ class Menu extends Component {
     state = {
         check: false,
 		showLogin: true
-    }
+    };
 
     constructor(props) {
         super(props);
 
-        const url = "/api/loginValue"
+        const url = "/api/loginValue";
         axios.get(url)
             .then(response => {
                this.setState({check: response.data.value});

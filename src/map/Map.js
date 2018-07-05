@@ -63,10 +63,8 @@ class Map extends Component {
             withGoogleMap,
             lifecycle({
                 componentDidMount() {
-                    console.log('INSIDE component')
-                    console.log(this.props.travel)
 
-                    const refs = {}
+                    const refs = {};
 
                     this.setState({
                         places: [],
@@ -90,13 +88,10 @@ class Map extends Component {
                         destination: new google.maps.LatLng(this.props.latDes, this.props.lngDes),
                         travelMode: this.props.travel,
                     }, (result, status) => {
-                        var route = result.routes[0];
-                        var distanceValue = route.legs[0].distance.value;
-                        var distanceText = route.legs[0].distance.text;
+                        let route = result.routes[0];
+                        let distanceValue = route.legs[0].distance.value;
+                        let distanceText = route.legs[0].distance.text;
 
-
-                        console.log('Calculated Distance');
-                        console.log(distanceValue);
                         document.getElementById("distance").innerHTML = 'Distance: ' + distanceText;
                         if (status === google.maps.DirectionsStatus.OK) {
                             this.setState({
@@ -104,7 +99,7 @@ class Map extends Component {
                             });
 
                         } else {
-                            console.error(`error fetching directions ${result}`);
+
                         }
 
                     });
@@ -121,11 +116,6 @@ class Map extends Component {
             </GoogleMap>
 
         );
-
-        console.log("current lat" + this.props.currLat)
-        console.log("current lat" + this.props.currLng)
-
-
 
         return (
             <div>

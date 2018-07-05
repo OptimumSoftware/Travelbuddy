@@ -99,7 +99,7 @@ class Home extends Component {
 					}
 					else {
 						let temp = [];
-						for (var key in response.data) {
+						for (let key in response.data) {
 							temp.push(key)
 						}
 						this.setState({
@@ -121,7 +121,7 @@ class Home extends Component {
             })
         })
 
-		var proxy  = Config.proxy;
+		let proxy  = Config.proxy;
         axios.get('http://api.ipstack.com/check?access_key=201a9fbb71fcb2b3195f6626795b5907')
             .then(response => {
                 this.setState({ continent_name: response.data.continent_name,
@@ -143,15 +143,15 @@ class Home extends Component {
 
                 let places = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?language=EN&location='
                     + this.state.latitude + ',' + this.state.longitude;
-                this.setState({query: places})
-                var url = 'https://en.wikipedia.org//w/api.php?action=opensearch&format=json&search=' + this.state.city;
+                this.setState({query: places});
+                let url = 'https://en.wikipedia.org//w/api.php?action=opensearch&format=json&search=' + this.state.city;
                 axios.get(proxy + url)
                     .then(wiki => {
                         this.setState({text: wiki.data});
                         this.setState({wikitext: wiki.data[2][0]})
                     });
 
-                var locationURL  =  'https://maps.googleapis.com/maps/api/geocode/json?language=EN&latlng=' + this.state.latitude + ',' + this.state.longitude + '&key=AIzaSyCRNHsASJT7nxChb3zBLeH2hGJdZGMIZGQ'
+                let locationURL  =  'https://maps.googleapis.com/maps/api/geocode/json?language=EN&latlng=' + this.state.latitude + ',' + this.state.longitude + '&key=AIzaSyCRNHsASJT7nxChb3zBLeH2hGJdZGMIZGQ';
                 axios.get(locationURL)
                     .then(location => {
                         let number = location.data.results.length - 2;
@@ -159,14 +159,12 @@ class Home extends Component {
                         if (this.state.gpsCity){
                             this.setState({
                                 city: this.state.gpsCity
-                            })
-                            var url = 'https://en.wikipedia.org//w/api.php?action=opensearch&format=json&language=EN&search=' + this.state.city;
+                            });
+                            let url = 'https://en.wikipedia.org//w/api.php?action=opensearch&format=json&language=EN&search=' + this.state.city;
                             axios.get(proxy + url)
                                 .then(wiki => {
                                     this.setState({text: wiki.data});
                                     this.setState({wikitext: wiki.data[2][0]})
-                                    console.log(wiki.data)
-                                    console.log(wiki.data[2][0])
                                 });
 
                         }
@@ -177,7 +175,7 @@ class Home extends Component {
 			.then(() => {
 				axios.get("/api/getEvents?city=" + this.state.city + "&country=" + this.state.country_name)
 					.then(resp => {
-						resp = resp.data
+						resp = resp.data;
 						if(resp) {
 							this.setState({
 								eventPlace: resp[0]
@@ -215,7 +213,7 @@ class Home extends Component {
             modalLng: lng,
             modalId: id,
         })
-    }
+    };
 	
 	eventModalHandler = (name, image, address, description, startDate, startTime, endDate, endTime, id, lat, lng) => {
 		this.setState({
@@ -232,7 +230,7 @@ class Home extends Component {
 			modalLat: lat,
 			modalLng: lng
 		})
-	}
+	};
 
 
     hideModal = () => {
@@ -243,18 +241,17 @@ class Home extends Component {
         this.setState({
             range: e.target.value
         })
-    }
+    };
 
     render() {
         /* loop door alle catergories in state en maak places (div's) aan*/
-        let textcategories = null
+        let textcategories = null;
         let checkLoader = 0;
         textcategories = (
             <div>
                 {this.state.categories.map((categorie,index) => {
                     let rand = Math.floor(Math.random() * 3);
                     if (this.state.query) {
-                        console.log("verander")
                         return <Places
                             categories ={categorie}
                             key={this.state.id + index}
@@ -334,8 +331,6 @@ class Home extends Component {
                 currentLng = {this.state.longitude}
             />
 		}
-
-
 
         return (
             <div>

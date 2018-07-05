@@ -5,7 +5,7 @@ import axios from 'axios';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import fileIcon from '@fortawesome/fontawesome-free-regular/faFile';
 import PlacesAutocomplete from 'react-places-autocomplete';
-import { geocodeByAddress, geocodeByPlaceId, getLatLng } from 'react-places-autocomplete';
+import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 class AddEvent extends Component {
 	constructor(props) {
@@ -29,7 +29,7 @@ class AddEvent extends Component {
 			lng: 0,
 			message: null,
 			messageId: null,
-		}
+		};
 		
 				
 		const url = "/api/loginCheck";	
@@ -51,7 +51,7 @@ class AddEvent extends Component {
 							jsonCategories: response
 						});
 						let temp = [];
-						for(var key in response) {
+						for(let key in response) {
 							temp.push(key)
 						}
 						this.setState({
@@ -72,8 +72,7 @@ class AddEvent extends Component {
 	  handleAddressSelect(location) {
 		geocodeByAddress(location)
 			.then(results => {
-				this.setState({location: results[0]['formatted_address']})
-				console.log(results[0])
+				this.setState({location: results[0]['formatted_address']});
 				return getLatLng(results[0])
 			})
 			.then(({ lat, lng }) => {
@@ -87,10 +86,9 @@ class AddEvent extends Component {
 	  
 	  
 	  addEvent() {
-		  var formData = new FormData();
-		  var image = document.getElementById("fileUpload");
+		  let formData = new FormData();
+		  let image = document.getElementById("fileUpload");
 		  if(image.value != "") {
-			  console.log("image");
 			  formData.append("image", image.files[0])
 		  }
 		  
@@ -158,15 +156,6 @@ class AddEvent extends Component {
 								<label className="addEventLabel">Event name</label>
 								<input type="text" name="name" value={this.state.name} onChange={this.handleInputChange} maxlength="128" required />
 							</div>
-
-							{/*<div className="addEventItem">
-								<label className="addEventLabel">Category</label>
-								<select name="category" value={this.state.category} onChange={this.handleInputChange} required >
-									{this.state.categories.map((item) => (
-										<option value={this.state.jsonCategories[item]}>{item.split('_').join(' ')}</option>
-									))}
-								</select>
-							</div>*/}
 						</div>
 						
 						<div className="addEventRow">
